@@ -9,8 +9,7 @@ public class Monster extends Character {
     private Difficulty difficulty;
 
     public Monster(double xp, Difficulty difficulty, int level, int strength, int intelligence, int agility) {
-        super(level, strength, intelligence, agility);
+        super(level, difficulty, strength, intelligence, agility);
         this.xp = xp;
-        this.difficulty = difficulty;
     }
 }
