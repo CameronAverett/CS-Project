@@ -8,11 +8,9 @@ public class Player extends Character {
     private double score = 0.0;
 
     private String name;
-    private Difficulty difficulty;
 
     public Player(String name, Difficulty difficulty, int level, int strength, int intelligence, int agility) {
-        super(level, strength, intelligence, agility);
+        super(level, difficulty, strength, intelligence, agility);
         this.name = name;
-        this.difficulty = difficulty;
     }
 }

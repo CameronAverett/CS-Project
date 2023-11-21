@@ -1,5 +1,7 @@
 package com.csproject.character;
 
+import com.csproject.game.Difficulty;
+
 public abstract class Character {
 
     private static final double BASE_HP = 100;
@@ -10,13 +12,15 @@ public abstract class Character {
     private double hp;
     private double mana;
     private int level;
+    private Difficulty difficulty;
 
     protected final CharacterAttribute strength;
     protected final CharacterAttribute intelligence;
     protected final CharacterAttribute agility;
 
-    protected Character(int level, int strength, int intelligence, int agility) {
+    protected Character(int level, Difficulty difficulty, int strength, int intelligence, int agility) {
         this.level = level;
+        this.difficulty = difficulty;
         this.strength = new CharacterAttribute("strength", strength);
         this.intelligence = new CharacterAttribute("intelligence", intelligence);
         this.agility = new CharacterAttribute("agility", agility);
@@ -52,7 +56,6 @@ public abstract class Character {
     private double getMaxMana() {
         return MANA_PER_INTELLIGENCE * intelligence.getValue();
     }
-
 
     public boolean isDead() {
         return this.hp < 0.0;
