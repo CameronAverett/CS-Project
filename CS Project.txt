@@ -1,0 +1,14 @@
+﻿* Character Class
+   * Player Class
+      * Hp
+      * Strength
+      * Intelligence
+      * Agility
+         * Warrior Class
+         * Mage Class
+         * Archer Class
+   * Monster Class
+      * Skeleton
+      * Slime
+      * …
+   *
