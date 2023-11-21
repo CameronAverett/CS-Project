@@ -33,6 +33,10 @@ public abstract class Character {
         this.hp = getMaxHp();
     }
 
+    public void levelUp() {
+        this.level++;
+    }
+
     private double getMaxHp() {
         return BASE_HP + (HP_PER_LEVEL * (this.level - 1));
     }
