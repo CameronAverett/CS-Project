@@ -1,7 +1,5 @@
 package com.csproject.character;
 
-import com.csproject.game.Difficulty;
-
 public abstract class Character {
 
     private static final double BASE_HP = 100;
@@ -12,15 +10,13 @@ public abstract class Character {
     private double hp;
     private double mana;
     private int level;
-    private Difficulty difficulty;
 
     protected final CharacterAttribute strength;
     protected final CharacterAttribute intelligence;
     protected final CharacterAttribute agility;
 
-    protected Character(int level, Difficulty difficulty, int strength, int intelligence, int agility) {
+    protected Character(int level, int strength, int intelligence, int agility) {
         this.level = level;
-        this.difficulty = difficulty;
         this.strength = new CharacterAttribute("strength", strength);
         this.intelligence = new CharacterAttribute("intelligence", intelligence);
         this.agility = new CharacterAttribute("agility", agility);
@@ -28,6 +24,8 @@ public abstract class Character {
         this.hp = getMaxHp();
         this.mana = getMaxMana();
     }
+
+    public abstract CombatAction combat();
 
     public double getHp() {
         return this.hp;
@@ -37,24 +35,34 @@ public abstract class Character {
         this.hp -= damage;
     }
 
-    public void heal() {
-        this.hp = getMaxHp();
+    public void heal(double health) {
+        this.hp += health;
+        if (this.hp > this.getMaxHp()) {
+            this.hp = getMaxHp();
+        }
+    }
+
+    public double getMaxHp() {
+        return BASE_HP + (HP_PER_LEVEL * (this.level - 1));
+    }
+
+    public double getMana() {
+        return this.mana;
+    }
+
+    public void regenMana(double mana) {
+        this.mana += mana;
+        if (this.mana > this.getMaxMana()) {
+            this.mana = getMaxMana();
+        }
+    }
+
+    public double getMaxMana() {
+        return MANA_PER_INTELLIGENCE * intelligence.getValue();
     }
 
     public void levelUp() {
         this.level++;
-    }
-
-    private double getMaxHp() {
-        return BASE_HP + (HP_PER_LEVEL * (this.level - 1));
-    }
-
-    private double getMana() {
-        return this.mana;
-    }
-
-    private double getMaxMana() {
-        return MANA_PER_INTELLIGENCE * intelligence.getValue();
     }
 
     public boolean isDead() {
