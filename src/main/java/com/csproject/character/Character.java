@@ -1,5 +1,10 @@
 package com.csproject.character;
 
+import com.csproject.character.effects.StatusEffect;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Character {
 
     private static final double BASE_HP = 100;
@@ -14,6 +19,8 @@ public abstract class Character {
     protected final CharacterAttribute strength;
     protected final CharacterAttribute intelligence;
     protected final CharacterAttribute agility;
+
+    protected List<StatusEffect> statusEffects = new ArrayList<>();
 
     protected Character(int level, int strength, int intelligence, int agility) {
         this.level = level;
@@ -46,6 +53,10 @@ public abstract class Character {
         return BASE_HP + (HP_PER_LEVEL * (this.level - 1));
     }
 
+    public boolean isDead() {
+        return this.hp < 0.0;
+    }
+
     public double getMana() {
         return this.mana;
     }
@@ -65,7 +76,7 @@ public abstract class Character {
         this.level++;
     }
 
-    public boolean isDead() {
-        return this.hp < 0.0;
+    public List<StatusEffect> getStatusEffects() {
+        return this.statusEffects;
     }
 }
