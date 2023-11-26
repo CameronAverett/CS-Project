@@ -52,6 +52,10 @@ public class GameResponse {
         }
     }
 
+    public void displayResponses() {
+        this.displayResponses("Valid Responses");
+    }
+
     public void setResponses(List<String> validResponses) {
         this.validResponses = validResponses;
     }
