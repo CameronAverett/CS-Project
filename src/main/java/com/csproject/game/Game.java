@@ -1,11 +1,15 @@
 package com.csproject.game;
 
 import com.csproject.character.player.Player;
+
+import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
 
-    private static Game instance = null;
+    private static final Random random = new Random();
+
+    private static Game instance;
 
     private Scanner in = new Scanner(System.in);
     private double difficulty = 1.0;
@@ -17,10 +21,10 @@ public class Game {
     }
 
     public static Game getInstance() {
-        if (Game.instance == null) {
-            Game.instance = new Game();
+        if (instance == null) {
+            instance = new Game();
         }
-        return Game.instance;
+        return instance;
     }
 
     public void play() {
@@ -29,5 +33,9 @@ public class Game {
 
     public double getDifficulty() {
         return this.difficulty;
+    }
+
+    public static Random getRandom() {
+        return random;
     }
 }

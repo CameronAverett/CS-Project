@@ -1,6 +1,7 @@
 package com.csproject.character;
 
 import com.csproject.character.effects.StatusEffect;
+import com.csproject.game.Game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,5 +79,13 @@ public abstract class Character {
 
     public List<StatusEffect> getStatusEffects() {
         return this.statusEffects;
+    }
+
+    public static int[] generateStats(int min, int bound, int size) {
+        int[] genStats = new int[size];
+        for(int i = 0; i < size; i++) {
+            genStats[i] = Game.getRandom().nextInt(min, bound);
+        }
+        return genStats;
     }
 }

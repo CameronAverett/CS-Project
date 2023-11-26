@@ -1,14 +1,12 @@
 package com.csproject.game;
 
+import com.csproject.character.Character;
 import com.csproject.character.player.Player;
 import com.csproject.character.player.PlayerFactory;
-import com.csproject.util.ScannerUtil;
 
 import java.util.*;
 
 public class CharacterCreator {
-
-    private final Random random = new Random();
 
     private final Scanner in;
 
@@ -17,51 +15,38 @@ public class CharacterCreator {
     }
 
     private String getName() {
-        System.out.print("What is your name? ");
-        return in.next();
+        GameResponse response = new GameResponse(in, "What is your name? ");
+        return response.getResponse();
     }
 
     private String getPlayerClass() {
-        List<String> availableClasses = List.of("default");
-        System.out.println("\nAvailable Classes");
-        for (String availableClass : availableClasses) {
-            System.out.printf("- %s%n", availableClass);
-        }
-        return ScannerUtil.getResponse(in, "Please select a class: ", availableClasses);
+        GameResponse response = new GameResponse(in, "Please select a class: ");
+        response.setResponses(List.of("Warrior", "Mage", "Archer"));
+
+        response.displayResponses("\nAvailable Classes");
+        return response.getResponse();
     }
 
     private HashMap<String, Integer> getStats() {
-        List<String> statNames = Arrays.asList("strength", "intelligence", "agility");
         HashMap<String, Integer> stats = new HashMap<>();
 
-        int[] genStats = new int[statNames.size()];
-        for(int i = 0; i < genStats.length; i++) {
-            genStats[i] = random.nextInt(1, 7);
-        }
+        List<String> statNames = Arrays.asList("Strength", "Intelligence", "Agility");
+        int[] genStats = Character.generateStats(1, 7, statNames.size());
 
         boolean selectedStats = false;
         while (!selectedStats) {
-            System.out.println("\nGenerated stats");
-            for (int stat : genStats) {
-                System.out.printf("- %d%n", stat);
-            }
+            GameResponse response = new GameResponse(in, "Which stat should %d be assigned to? ", new ArrayList<>(statNames));
+            response.displayResponseData("\nGenerated stats", Arrays.stream(genStats).mapToObj(String::valueOf).toList());
 
-            List<String> assignedStats = new ArrayList<>();
             for (int i = 0; i < statNames.size(); i++) {
-                System.out.println("\nUnassigned stats");
-                List<String> statNameCopy = new ArrayList<>(statNames);
-                statNameCopy.removeAll(assignedStats);
-                for (String stat : statNameCopy) {
-                    System.out.printf("- %s%n", stat);
-                }
-                String prompt = String.format("Which stat should %d be assigned to? ", genStats[i]);
-                String response = ScannerUtil.getResponse(in, prompt, statNameCopy);
-                stats.put(response, genStats[i]);
-                assignedStats.add(response);
+                response.displayResponses("\nUnassigned stats");
+                response.formatPrompt(genStats[i]);
+                stats.put(response.getResponse(true), genStats[i]);
             }
 
-            String prompt = "Would you like to use these stats? ";
-            selectedStats = ScannerUtil.getResponse(in, prompt, List.of("yes", "no")).equals("yes");
+            GameResponse exitResponse = new GameResponse(in, "Would you like to use these stats? ");
+            exitResponse.setResponses(Arrays.asList("Yes", "No"));
+            selectedStats = exitResponse.getResponse(false).equals("yes");
         }
         return stats;
     }
