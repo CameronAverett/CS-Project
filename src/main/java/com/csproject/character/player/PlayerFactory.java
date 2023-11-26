@@ -8,8 +8,14 @@ public class PlayerFactory {
 
     public static Player get(String playerClass, String name, int level, int strength, int intelligence, int agility) {
         switch (playerClass.toLowerCase()) {
-            case "default" -> {
-                return new Player(name, level, strength, intelligence, agility);
+            case "warrior" -> {
+                return new Warrior(name, level, strength, intelligence, agility);
+            }
+            case "mage" -> {
+                return new Mage(name, level, strength, intelligence, agility);
+            }
+            case "archer" -> {
+                return new Archer(name, level, strength, intelligence, agility);
             }
             default -> throw new PlayerClassException(playerClass);
         }

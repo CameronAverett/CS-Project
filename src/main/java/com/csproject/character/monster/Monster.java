@@ -7,7 +7,7 @@ public class Monster extends Character {
 
     private double xp;
 
-    public Monster(double xp, int level, int strength, int intelligence, int agility) {
+    protected Monster(double xp, int level, int strength, int intelligence, int agility) {
         super(level, strength, intelligence, agility);
         this.xp = xp;
     }
