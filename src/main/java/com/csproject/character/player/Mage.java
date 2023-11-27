@@ -1,6 +1,9 @@
 package com.csproject.character.player;
 
 import com.csproject.character.CombatAction;
+import com.csproject.exceptions.character.CombatResponseException;
+import com.csproject.game.Game;
+import com.csproject.game.GameResponse;
 
 public class Mage extends Player {
 
