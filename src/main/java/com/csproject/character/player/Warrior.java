@@ -22,7 +22,7 @@ public class Warrior extends Player {
             System.out.println(name + " attempts to enter a berserker rage but fails.");
         }
     }
-    
+
     @Override
     public CombatAction combat() {
         return null;
