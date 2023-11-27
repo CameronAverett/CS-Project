@@ -28,8 +28,25 @@ public class Archer extends Player {
         }
     }
 
-    @Override
+     @Override
     public CombatAction combat() {
-        return null;
+        GameResponse response = new GameResponse(Game.getInstance().getIn(), "Which move do you want to use? ");
+        response.setResponses(List.of("Shoot Arrow", "Precision Shot", "Evasive Maneuver"));
+
+        response.displayResponses("\nAvailable Moves");
+        String responseValue = response.getResponse();
+
+        switch (responseValue) {
+            case "Shoot Arrow" -> {
+                return shootArrow();
+            }
+            case "Precision Shot" -> {
+                return precisionShot();
+            }
+            case "Evasive Maneuver" -> {
+                return evasiveManeuver();
+            }
+            default -> throw new CombatResponseException(responseValue);
+        }
     }
 }
