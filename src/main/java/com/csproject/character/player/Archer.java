@@ -1,6 +1,9 @@
 package com.csproject.character.player;
 
 import com.csproject.character.CombatAction;
+import com.csproject.exceptions.character.CombatResponseException;
+import com.csproject.game.Game;
+import com.csproject.game.GameResponse;
 
 public class Archer extends Player {
 
@@ -10,6 +13,7 @@ public class Archer extends Player {
     
     public void shootArrow() {
         int arrowDamage = getStrength() + getAgility();
+        return new CombatAction("Shoot Arrow", attackDamage, 0.5);
     }
     
     public void precisionShot() {
@@ -18,6 +22,7 @@ public class Archer extends Player {
         } else {
             System.out.println(name + "'s precision shot fails due to low intelligence.");
         }
+        return new CombatAction("Percision Shot", 0.0, getIntelligence() >= 15);
     }
     
     public void evasiveManeuver() {
@@ -26,10 +31,28 @@ public class Archer extends Player {
         } else {
             System.out.println(name + " attempts an evasive maneuver but fails due to low agility.");
         }
+        return new CombatAction("Evasive Maneuver", 0.0, getAgility() >= 20);
     }
 
-    @Override
+     @Override
     public CombatAction combat() {
-        return null;
+        GameResponse response = new GameResponse(Game.getInstance().getIn(), "Which move do you want to use? ");
+        response.setResponses(List.of("Shoot Arrow", "Precision Shot", "Evasive Maneuver"));
+
+        response.displayResponses("\nAvailable Moves");
+        String responseValue = response.getResponse();
+
+        switch (responseValue) {
+            case "Shoot Arrow" -> {
+                return shootArrow();
+            }
+            case "Precision Shot" -> {
+                return precisionShot();
+            }
+            case "Evasive Maneuver" -> {
+                return evasiveManeuver();
+            }
+            default -> throw new CombatResponseException(responseValue);
+        }
     }
 }
