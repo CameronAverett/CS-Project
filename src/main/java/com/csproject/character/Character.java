@@ -1,10 +1,14 @@
 package com.csproject.character;
 
+import com.csproject.character.effects.Effect;
 import com.csproject.character.effects.StatusEffect;
+import com.csproject.character.player.Player;
 import com.csproject.game.Game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class Character {
 
@@ -38,7 +42,7 @@ public abstract class Character {
     public abstract void displayStats();
 
     public double getHp() {
-        return this.hp;
+        return Math.max(hp, 0.0);
     }
 
     public void dealDamage(double damage) {
@@ -81,6 +85,9 @@ public abstract class Character {
 
     public void levelUp() {
         this.level++;
+        if (this instanceof Player player) {
+            System.out.printf("%s has reached level %d%n", player.getName(), level);
+        }
     }
 
     public int getStrength() {
@@ -97,6 +104,51 @@ public abstract class Character {
 
     public List<StatusEffect> getStatusEffects() {
         return this.statusEffects;
+    }
+
+    public Map<String, Double> applyEffects() {
+        // Apply effects and remove the effects that have expired
+        List<Effect> appliedStatusEffects = new ArrayList<>();
+        for (StatusEffect effect : statusEffects) {
+            appliedStatusEffects.add(effect.applyEffect());
+        }
+        statusEffects.removeIf(StatusEffect::remove);
+
+        // Average the rate of change between all the effects
+        double damage = 0.0;
+        double strengthMultiplier = 0.0;
+        double intelligenceMultiplier = 0.0;
+        double agilityMultiplier = 0.0;
+
+        int strengthMultiplierCounter = 0;
+        int intelligenceMultiplierCounter = 0;
+        int agilityMultiplierCounter = 0;
+        for (Effect appliedEffect : appliedStatusEffects) {
+            damage += appliedEffect.damage();
+
+            if (appliedEffect.strength() > 0.0) {
+                strengthMultiplier += appliedEffect.strength();
+                strengthMultiplierCounter++;
+            }
+
+            if (appliedEffect.intelligence() > 0.0) {
+                intelligenceMultiplier += appliedEffect.intelligence();
+                intelligenceMultiplierCounter++;
+            }
+
+            if (appliedEffect.agility() > 0.0) {
+                agilityMultiplier += appliedEffect.agility();
+                agilityMultiplierCounter++;
+            }
+        }
+
+        // Apply the averaged effects onto attributes
+        if (damage > 0.0) dealDamage(damage);
+        HashMap<String, Double> appliedAttributes = new HashMap<>();
+        appliedAttributes.put("strength", getStrength() * strengthMultiplierCounter > 0 ? strengthMultiplier / strengthMultiplierCounter : 1.0);
+        appliedAttributes.put("intelligence", getIntelligence() * intelligenceMultiplierCounter > 0 ? intelligenceMultiplier / intelligenceMultiplierCounter : 1.0);
+        appliedAttributes.put("agility", getAgility() * agilityMultiplierCounter > 0 ? agilityMultiplier / agilityMultiplierCounter : 1.0);
+        return appliedAttributes;
     }
 
     public static int[] generateStats(int min, int bound, int size) {

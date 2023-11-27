@@ -4,7 +4,7 @@ import com.csproject.character.Character;
 
 public abstract class Monster extends Character {
 
-    private double xp;
+    private final double xp;
 
     protected Monster(double xp, int level, int strength, int intelligence, int agility) {
         super(level, strength, intelligence, agility);
@@ -15,6 +15,7 @@ public abstract class Monster extends Character {
     public void displayStats() {
         System.out.printf(
                 """
+                
                 ==============================
                 Class: %s
                 Xp: %.2f
@@ -31,5 +32,9 @@ public abstract class Monster extends Character {
                 getHp() + "/" + getMaxHp(), getMana() + "/" + getMaxMana(),
                 getStrength(), getIntelligence(), getAgility()
         );
+    }
+
+    public double getXp() {
+        return xp;
     }
 }

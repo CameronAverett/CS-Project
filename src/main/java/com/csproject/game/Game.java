@@ -34,9 +34,10 @@ public class Game {
     public void play() {
         initialize();
 
-        boolean play = true;
-        while (play) {
-            play = loop();
+        while (true) {
+            if (!loop()) {
+                break;
+            }
         }
     }
 
@@ -45,13 +46,15 @@ public class Game {
     }
 
     private boolean loop() {
-        Slime slime = new Slime(15.2, 1, 5, 6, 1);
+        Slime slime = new Slime(1, 5, 6, 1);
 
-        CombatAction playerAction = this.player.combat();
-        playerAction.displayAction(this.player, slime);
+        while (!slime.isDead()) {
+            CombatAction playerAction = this.player.combat();
+            playerAction.displayAction(this.player, slime);
 
-        if (playerAction.hit()) {
-            slime.dealDamage(playerAction.damage());
+            if (playerAction.hit()) {
+                slime.dealDamage(playerAction.damage());
+            }
         }
 
         slime.displayStats();

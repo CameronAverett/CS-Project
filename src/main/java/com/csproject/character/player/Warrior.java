@@ -14,7 +14,7 @@ public class Warrior extends Player {
     }
     public CombatAction attack() {
         double attackDamage = getStrength() * 2;
-        return new CombatAction("Attack", attackDamage, 0.5);
+        return new CombatAction("Attack", attackDamage, 0.9);
     }
 
     public CombatAction shieldBlock() {

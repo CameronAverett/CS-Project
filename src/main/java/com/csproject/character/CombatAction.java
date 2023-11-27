@@ -38,6 +38,7 @@ public record CombatAction(String attack, double damage, double chance, boolean 
 
         System.out.printf(
                 """
+                
                 %s used %s on %s and %s. %s
                 """,
                 selfTag, attack, targetTag,
