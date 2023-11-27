@@ -62,6 +62,10 @@ public class Game {
         return false;
     }
 
+    public Scanner getIn() {
+        return in;
+    }
+
     public double getDifficulty() {
         return this.difficulty;
     }
@@ -70,8 +74,8 @@ public class Game {
         this.difficulty += DIFFICULTY_RATE;
     }
 
-    public Scanner getIn() {
-        return in;
+    public int getPlayerLevel() {
+        return player.getLevel();
     }
 
     public static Random getRandom() {

@@ -1,10 +1,15 @@
 package com.csproject.game;
 
+import com.csproject.exceptions.game.GameResponseNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class GameResponse {
+
+    private static final String BINARY_T = "Yes";
+    private static final String BINARY_F = "No";
 
     private final Scanner in;
     private final String prompt;
@@ -29,7 +34,7 @@ public class GameResponse {
             String response = in.next().toLowerCase();
             if (validResponses.isEmpty() || hasResponse(response)) {
                 if (removeResponse) removeResponse(response);
-                return response;
+                return getFormattedResponse(response);
             }
         }
     }
@@ -73,11 +78,25 @@ public class GameResponse {
         return responses.contains(response.toLowerCase());
     }
 
+    public String getFormattedResponse(String response) {
+        for (String validResponse : validResponses) {
+            if (response.equals(validResponse.toLowerCase())) {
+                return validResponse;
+            }
+        }
+        throw new GameResponseNotFoundException(validResponses, response);
+    }
+
     public int responseSize() {
         return validResponses.size();
     }
 
     public void formatPrompt(Object... args) {
         this.formattedPrompt = String.format(this.prompt, args);
+    }
+
+    public static boolean getBinaryResponse(Scanner in, String prompt) {
+        GameResponse response = new GameResponse(in, prompt, List.of(BINARY_T, BINARY_F));
+        return response.getResponse().equals(BINARY_T);
     }
 }

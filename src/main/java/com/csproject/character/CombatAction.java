@@ -1,16 +1,32 @@
 package com.csproject.character;
 
+import com.csproject.character.effects.NoEffect;
+import com.csproject.character.effects.StatusEffect;
 import com.csproject.character.player.Player;
 import com.csproject.game.Game;
 
-public record CombatAction(String attack, double damage, double chance, boolean hit) {
+public record CombatAction(String attack, double damage, double chance, StatusEffect effect, boolean hit) {
+
+    private static final String DEFAULT_SUCCESS_IDENTIFIER = "HIT";
+    private static final String DEFAULT_FAILURE_IDENTIFIER = "MISSED";
+
+    private static final String DEFAULT_SUCCESS_MESSAGE = "%n%s received %.2f damage";
+    private static final String DEFAULT_FAILURE_MESSAGE = "";
 
     public CombatAction {
         assert chance > 0.0 && chance <= 1.0;
     }
 
     public CombatAction(String attack, double damage, double chance) {
-        this(attack, damage, chance, roll(chance));
+        this(attack, damage, chance, new NoEffect(), roll(chance));
+    }
+
+    public CombatAction(String attack, double damage, boolean hit) {
+        this(attack, damage, 0.0, new NoEffect(), hit);
+    }
+
+    public CombatAction(String attack, StatusEffect effect, boolean hit) {
+        this(attack, 0.0, 0.0, effect, hit);
     }
 
     public static boolean roll(double chance) {

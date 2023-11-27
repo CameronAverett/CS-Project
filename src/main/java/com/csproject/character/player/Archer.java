@@ -5,51 +5,46 @@ import com.csproject.exceptions.character.CombatResponseException;
 import com.csproject.game.Game;
 import com.csproject.game.GameResponse;
 
+import java.util.List;
+
 public class Archer extends Player {
+
+    private static final String SHOOT_ARROW = "Shoot Arrow";
+    private static final String PRECISION_SHOT = "Precision Shot";
+    private static final String EVASIVE_MANEUVER = "Evasive Maneuver";
 
     public Archer(String name, int level, int strength, int intelligence, int agility) {
         super(name, level, strength, intelligence, agility);
     }
     
-    public void shootArrow() {
-        int arrowDamage = getStrength() + getAgility();
-        return new CombatAction("Shoot Arrow", attackDamage, 0.5);
+    public CombatAction shootArrow() {
+        return new CombatAction(SHOOT_ARROW, getStrength() + getAgility(), 0.5);
     }
     
-    public void precisionShot() {
-        if (getIntelligence() >= 15) {
-            System.out.println(name + " performs a precision shot!");
-        } else {
-            System.out.println(name + "'s precision shot fails due to low intelligence.");
-        }
-        return new CombatAction("Percision Shot", 0.0, getIntelligence() >= 15);
+    public CombatAction precisionShot() {
+        return new CombatAction(PRECISION_SHOT, 10.0, getIntelligence() >= 15);
     }
     
-    public void evasiveManeuver() {
-        if (getAgility() >= 20) {
-            System.out.println(name + " performs an evasive maneuver!");
-        } else {
-            System.out.println(name + " attempts an evasive maneuver but fails due to low agility.");
-        }
-        return new CombatAction("Evasive Maneuver", 0.0, getAgility() >= 20);
+    public CombatAction evasiveManeuver() {
+        return new CombatAction(EVASIVE_MANEUVER, 0.0, getAgility() >= 20);
     }
 
      @Override
     public CombatAction combat() {
         GameResponse response = new GameResponse(Game.getInstance().getIn(), "Which move do you want to use? ");
-        response.setResponses(List.of("Shoot Arrow", "Precision Shot", "Evasive Maneuver"));
+        response.setResponses(List.of(SHOOT_ARROW, PRECISION_SHOT, EVASIVE_MANEUVER));
 
         response.displayResponses("\nAvailable Moves");
         String responseValue = response.getResponse();
 
         switch (responseValue) {
-            case "Shoot Arrow" -> {
+            case SHOOT_ARROW -> {
                 return shootArrow();
             }
-            case "Precision Shot" -> {
+            case PRECISION_SHOT -> {
                 return precisionShot();
             }
-            case "Evasive Maneuver" -> {
+            case EVASIVE_MANEUVER -> {
                 return evasiveManeuver();
             }
             default -> throw new CombatResponseException(responseValue);

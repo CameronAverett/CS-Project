@@ -2,19 +2,27 @@ package com.csproject.character.player;
 
 import com.csproject.exceptions.character.player.PlayerClassException;
 
+import java.util.List;
+
 public class PlayerFactory {
+
+    private static final String WARRIOR = "Warrior";
+    private static final String MAGE = "Mage";
+    private static final String ARCHER = "Archer";
+
+    public static final List<String> PLAYER_CLASSES = List.of(WARRIOR, MAGE, ARCHER);
 
     private PlayerFactory() {}
 
     public static Player get(String playerClass, String name, int level, int strength, int intelligence, int agility) {
-        switch (playerClass.toLowerCase()) {
-            case "warrior" -> {
+        switch (playerClass) {
+            case WARRIOR -> {
                 return new Warrior(name, level, strength, intelligence, agility);
             }
-            case "mage" -> {
+            case MAGE -> {
                 return new Mage(name, level, strength, intelligence, agility);
             }
-            case "archer" -> {
+            case ARCHER -> {
                 return new Archer(name, level, strength, intelligence, agility);
             }
             default -> throw new PlayerClassException(playerClass);

@@ -12,6 +12,12 @@ import java.util.Map;
 
 public abstract class Character {
 
+    public static final String STRENGTH = "Strength";
+    public static final String INTELLIGENCE = "Intelligence";
+    public static final String AGILITY = "Agility";
+
+    public static final List<String> CHARACTER_ATTRS = List.of(STRENGTH, INTELLIGENCE, AGILITY);
+
     private static final double BASE_HP = 100;
     private static final double HP_PER_LEVEL = 10;
 
@@ -21,17 +27,17 @@ public abstract class Character {
     private double mana;
     private int level;
 
-    protected final CharacterAttribute strength;
-    protected final CharacterAttribute intelligence;
-    protected final CharacterAttribute agility;
+    protected final CharacterAttribute strengthAttr;
+    protected final CharacterAttribute intelligenceAttr;
+    protected final CharacterAttribute agilityAttr;
 
     protected List<StatusEffect> statusEffects = new ArrayList<>();
 
     protected Character(int level, int strength, int intelligence, int agility) {
         this.level = level;
-        this.strength = new CharacterAttribute("strength", strength);
-        this.intelligence = new CharacterAttribute("intelligence", intelligence);
-        this.agility = new CharacterAttribute("agility", agility);
+        this.strengthAttr = new CharacterAttribute(STRENGTH, strength);
+        this.intelligenceAttr = new CharacterAttribute(INTELLIGENCE, intelligence);
+        this.agilityAttr = new CharacterAttribute(AGILITY, agility);
 
         this.hp = getMaxHp();
         this.mana = getMaxMana();
@@ -76,7 +82,7 @@ public abstract class Character {
     }
 
     public double getMaxMana() {
-        return MANA_PER_INTELLIGENCE * intelligence.getValue();
+        return MANA_PER_INTELLIGENCE * intelligenceAttr.getValue();
     }
 
     public int getLevel() {
@@ -91,15 +97,15 @@ public abstract class Character {
     }
 
     public int getStrength() {
-        return strength.getValue();
+        return strengthAttr.getValue();
     }
 
     public int getIntelligence() {
-        return intelligence.getValue();
+        return intelligenceAttr.getValue();
     }
 
     public int getAgility() {
-        return agility.getValue();
+        return agilityAttr.getValue();
     }
 
     public List<StatusEffect> getStatusEffects() {
@@ -110,6 +116,7 @@ public abstract class Character {
         // Apply effects and remove the effects that have expired
         List<Effect> appliedStatusEffects = new ArrayList<>();
         for (StatusEffect effect : statusEffects) {
+            if (effect.remove()) continue;
             appliedStatusEffects.add(effect.applyEffect());
         }
         statusEffects.removeIf(StatusEffect::remove);
@@ -145,9 +152,12 @@ public abstract class Character {
         // Apply the averaged effects onto attributes
         if (damage > 0.0) dealDamage(damage);
         HashMap<String, Double> appliedAttributes = new HashMap<>();
-        appliedAttributes.put("strength", getStrength() * strengthMultiplierCounter > 0 ? strengthMultiplier / strengthMultiplierCounter : 1.0);
-        appliedAttributes.put("intelligence", getIntelligence() * intelligenceMultiplierCounter > 0 ? intelligenceMultiplier / intelligenceMultiplierCounter : 1.0);
-        appliedAttributes.put("agility", getAgility() * agilityMultiplierCounter > 0 ? agilityMultiplier / agilityMultiplierCounter : 1.0);
+        appliedAttributes.put(STRENGTH, getStrength() * strengthMultiplierCounter > 0 ?
+                strengthMultiplier / strengthMultiplierCounter : 1.0);
+        appliedAttributes.put(INTELLIGENCE, getIntelligence() * intelligenceMultiplierCounter > 0 ?
+                intelligenceMultiplier / intelligenceMultiplierCounter : 1.0);
+        appliedAttributes.put(AGILITY, getAgility() * agilityMultiplierCounter > 0 ?
+                agilityMultiplier / agilityMultiplierCounter : 1.0);
         return appliedAttributes;
     }
 

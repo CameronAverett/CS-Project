@@ -21,7 +21,7 @@ public class CharacterCreator {
 
     private String getPlayerClass() {
         GameResponse response = new GameResponse(in, "Please select a class: ");
-        response.setResponses(List.of("Warrior", "Mage", "Archer"));
+        response.setResponses(PlayerFactory.PLAYER_CLASSES);
 
         response.displayResponses("\nAvailable Classes");
         return response.getResponse();
@@ -29,24 +29,21 @@ public class CharacterCreator {
 
     private HashMap<String, Integer> getStats() {
         HashMap<String, Integer> stats = new HashMap<>();
-
-        List<String> statNames = Arrays.asList("Strength", "Intelligence", "Agility");
-        int[] genStats = Character.generateStats(1, 7, statNames.size());
+        
+        int[] genStats = Character.generateStats(1, 7, Character.CHARACTER_ATTRS.size());
 
         boolean selectedStats = false;
         while (!selectedStats) {
-            GameResponse response = new GameResponse(in, "Which stat should %d be assigned to? ", new ArrayList<>(statNames));
+            GameResponse response = new GameResponse(in, "Which stat should %d be assigned to? ", new ArrayList<>(Character.CHARACTER_ATTRS));
             response.displayResponseData("\nGenerated stats", Arrays.stream(genStats).mapToObj(String::valueOf).toList());
 
-            for (int i = 0; i < statNames.size(); i++) {
+            for (int i = 0; i < Character.CHARACTER_ATTRS.size(); i++) {
                 response.displayResponses("\nUnassigned stats");
                 response.formatPrompt(genStats[i]);
                 stats.put(response.getResponse(true), genStats[i]);
             }
 
-            GameResponse exitResponse = new GameResponse(in, "Would you like to use these stats? ");
-            exitResponse.setResponses(Arrays.asList("Yes", "No"));
-            selectedStats = exitResponse.getResponse(false).equals("yes");
+            selectedStats = GameResponse.getBinaryResponse(in, "Would you like to use these stats? ");
         }
         return stats;
     }
