@@ -35,6 +35,8 @@ public abstract class Character {
 
     public abstract CombatAction combat();
 
+    public abstract void displayStats();
+
     public double getHp() {
         return this.hp;
     }
@@ -73,8 +75,24 @@ public abstract class Character {
         return MANA_PER_INTELLIGENCE * intelligence.getValue();
     }
 
+    public int getLevel() {
+        return this.level;
+    }
+
     public void levelUp() {
         this.level++;
+    }
+
+    public int getStrength() {
+        return strength.getValue();
+    }
+
+    public int getIntelligence() {
+        return intelligence.getValue();
+    }
+
+    public int getAgility() {
+        return agility.getValue();
     }
 
     public List<StatusEffect> getStatusEffects() {

@@ -1,5 +1,6 @@
 package com.csproject.game;
 
+import com.csproject.character.monster.Slime;
 import com.csproject.character.player.Player;
 
 import java.util.Random;
@@ -14,10 +15,10 @@ public class Game {
     private Scanner in = new Scanner(System.in);
     private double difficulty = 1.0;
 
-    private final Player player;
+    private Player player;
 
     private Game() {
-        this.player = new CharacterCreator(in).createCharacter();
+
     }
 
     public static Game getInstance() {
@@ -28,7 +29,18 @@ public class Game {
     }
 
     public void play() {
-        System.out.println("Hello, World!");
+        initialize();
+        loop();
+    }
+
+    private void initialize() {
+        this.player = new CharacterCreator(in).createCharacter();
+    }
+
+    private void loop() {
+        player.displayStats();
+
+        new Slime(15.2, 1, 5, 6, 1).displayStats();
     }
 
     public double getDifficulty() {
