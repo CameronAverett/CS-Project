@@ -8,15 +8,15 @@ public class Warrior extends Player {
         super(name, level, strength, intelligence, agility);
     }
      public void attack() {
-        int attackDamage = strength * 2;
+        int attackDamage = getStrength() * 2;
     }
 
     public void shieldBlock() {
-        int blockStrength = strength + agility;
+        int blockStrength = getStrength() + getAgility();
     }
 
     public void berserkerRage() {
-        if (strength >= 15 && level >= 10) {
+        if (getStrength() >= 15 && getLevel() >= 10) {
             System.out.println(name + " enters a berserker rage, gaining increased strength!");
         } else {
             System.out.println(name + " attempts to enter a berserker rage but fails.");

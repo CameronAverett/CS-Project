@@ -8,11 +8,13 @@ import java.util.Scanner;
 
 public class Game {
 
+    private static final double DIFFICULTY_RATE = 0.1;
+
     private static final Random random = new Random();
 
     private static Game instance;
 
-    private Scanner in = new Scanner(System.in);
+    private final Scanner in = new Scanner(System.in);
     private double difficulty = 1.0;
 
     private Player player;
@@ -30,21 +32,31 @@ public class Game {
 
     public void play() {
         initialize();
-        loop();
+
+        boolean play = true;
+        while (play) {
+            play = loop();
+        }
     }
 
     private void initialize() {
         this.player = new CharacterCreator(in).createCharacter();
     }
 
-    private void loop() {
+    private boolean loop() {
         player.displayStats();
 
         new Slime(15.2, 1, 5, 6, 1).displayStats();
+
+        return false;
     }
 
     public double getDifficulty() {
         return this.difficulty;
+    }
+
+    private void scaleDifficulty() {
+        this.difficulty += DIFFICULTY_RATE;
     }
 
     public static Random getRandom() {

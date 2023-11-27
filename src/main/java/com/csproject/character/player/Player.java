@@ -4,9 +4,10 @@ import com.csproject.character.Character;
 
 public abstract class Player extends Character {
 
-    private double score = 0.0;
+    protected String name;
 
-    private String name;
+    private double exp = 0.0;
+    private double score = 0.0;
 
     protected Player(String name, int level, int strength, int intelligence, int agility) {
         super(level, strength, intelligence, agility);
@@ -23,6 +24,7 @@ public abstract class Player extends Character {
                 Score: %.2f
                 ==============================
                 Lv: %d
+                
                 Hp: %s
                 Mp: %s
                 ==============================

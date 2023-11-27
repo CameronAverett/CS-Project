@@ -8,13 +8,13 @@ public class Mage extends Player {
         super(name, level, strength, intelligence, agility);
     }
     public void castFireball() {
-        int damage = intelligence * 2;
+        int damage = getAgility() * 2;
     }
     public void summonIceBarrier() {
-        int barrierStrength = agility * 3;
+        int barrierStrength = getAgility() * 3;
     }
     public void teleport() {
-        if (agility >= 20) {
+        if (getAgility() >= 20) {
             System.out.println(name + " teleports to a new location!");
         } else {
             System.out.println(name + " attempts to teleport but fails due to low agility.");

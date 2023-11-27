@@ -9,11 +9,11 @@ public class Archer extends Player {
     }
     
     public void shootArrow() {
-        int arrowDamage = strength + agility;
+        int arrowDamage = getStrength() + getAgility();
     }
     
     public void precisionShot() {
-        if (intelligence >= 15) {
+        if (getIntelligence() >= 15) {
             System.out.println(name + " performs a precision shot!");
         } else {
             System.out.println(name + "'s precision shot fails due to low intelligence.");
@@ -21,7 +21,7 @@ public class Archer extends Player {
     }
     
     public void evasiveManeuver() {
-        if (agility >= 20) {
+        if (getAgility() >= 20) {
             System.out.println(name + " performs an evasive maneuver!");
         } else {
             System.out.println(name + " attempts an evasive maneuver but fails due to low agility.");
