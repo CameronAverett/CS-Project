@@ -1,5 +1,6 @@
 package com.csproject.game;
 
+import com.csproject.character.CombatAction;
 import com.csproject.character.monster.Slime;
 import com.csproject.character.player.Player;
 
@@ -44,9 +45,16 @@ public class Game {
     }
 
     private boolean loop() {
-        player.displayStats();
+        Slime slime = new Slime(15.2, 1, 5, 6, 1);
 
-        new Slime(15.2, 1, 5, 6, 1).displayStats();
+        CombatAction playerAction = this.player.combat();
+        playerAction.displayAction(this.player, slime);
+
+        if (playerAction.hit()) {
+            slime.dealDamage(playerAction.damage());
+        }
+
+        slime.displayStats();
 
         return false;
     }
@@ -57,6 +65,10 @@ public class Game {
 
     private void scaleDifficulty() {
         this.difficulty += DIFFICULTY_RATE;
+    }
+
+    public Scanner getIn() {
+        return in;
     }
 
     public static Random getRandom() {

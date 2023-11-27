@@ -24,7 +24,7 @@ public abstract class Player extends Character {
                 Score: %.2f
                 ==============================
                 Lv: %d
-                
+                Exp: %.2f%%
                 Hp: %s
                 Mp: %s
                 ==============================
@@ -33,8 +33,12 @@ public abstract class Player extends Character {
                 Agility: %d
                 ==============================
                 """, name, this.getClass().getSimpleName(), score, getLevel(),
-                getHp() + "/" + getMaxHp(), getMana() + "/" + getMaxMana(),
+                exp, getHp() + "/" + getMaxHp(), getMana() + "/" + getMaxMana(),
                 getStrength(), getIntelligence(), getAgility()
         );
+    }
+
+    public String getName() {
+        return name;
     }
 }
