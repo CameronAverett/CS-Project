@@ -32,9 +32,12 @@ public class GameResponse {
         while (true) {
             System.out.print(formattedPrompt);
             String response = in.next().toLowerCase();
-            if (validResponses.isEmpty() || hasResponse(response)) {
-                if (removeResponse) removeResponse(response);
-                return getFormattedResponse(response);
+            if (validResponses.isEmpty()) {
+                return response;
+            } else if (hasResponse(response)) {
+                String format = getFormattedResponse(response);
+                if (removeResponse) removeResponse(response.toLowerCase());
+                return format;
             }
         }
     }

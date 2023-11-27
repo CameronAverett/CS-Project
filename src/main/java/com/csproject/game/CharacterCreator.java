@@ -55,6 +55,6 @@ public class CharacterCreator {
         HashMap<String, Integer> stats = getStats();
 
         return PlayerFactory.get(playerClass, playerName, 1,
-                stats.get("strength"), stats.get("intelligence"), stats.get("agility"));
+                stats.get(Character.STRENGTH), stats.get(Character.INTELLIGENCE), stats.get(Character.AGILITY));
     }
 }

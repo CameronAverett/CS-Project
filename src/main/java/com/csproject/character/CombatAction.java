@@ -5,16 +5,18 @@ import com.csproject.character.effects.StatusEffect;
 import com.csproject.character.player.Player;
 import com.csproject.game.Game;
 
-public record CombatAction(String attack, double damage, double chance, StatusEffect effect, boolean hit) {
+public record CombatAction(String attack, double damage, double chance, StatusEffect effect, boolean hit, CombatActionDisplay display) {
 
-    private static final String DEFAULT_SUCCESS_IDENTIFIER = "HIT";
-    private static final String DEFAULT_FAILURE_IDENTIFIER = "MISSED";
+    private static final String SUCCESS_IDENTIFIER = "HIT";
+    private static final String FAILURE_IDENTIFIER = "MISSED";
 
-    private static final String DEFAULT_SUCCESS_MESSAGE = "%n%s received %.2f damage";
-    private static final String DEFAULT_FAILURE_MESSAGE = "";
 
     public CombatAction {
         assert chance > 0.0 && chance <= 1.0;
+    }
+
+    public CombatAction(String attack, double damage, double chance, StatusEffect effect, boolean hit) {
+        this(attack, damage, chance, effect, hit, new CombatActionDisplay());
     }
 
     public CombatAction(String attack, double damage, double chance) {
@@ -42,15 +44,12 @@ public record CombatAction(String attack, double damage, double chance, StatusEf
         return characterTag;
     }
 
-    private String getHitMessage(String target) {
-        return String.format("%n%s took %.2f damage.", target, damage);
-    }
-
     public void displayAction(Character self, Character target) {
         String selfTag = getCharacterTag(self);
         String targetTag = getCharacterTag(target);
-        String action = hit ? "hit" : "missed";
-        String consequence = hit ? getHitMessage(targetTag) : "";
+        String action = hit ? SUCCESS_IDENTIFIER : FAILURE_IDENTIFIER;
+        String consequence = hit ? display().getSuccessMessage(selfTag, targetTag, damage) :
+                display.getFailureMessage(selfTag, targetTag, damage);
 
         System.out.printf(
                 """
