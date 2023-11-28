@@ -1,5 +1,7 @@
 package com.csproject.exceptions.game;
 
+import com.csproject.game.GameResponse;
+
 import java.util.Arrays;
 import java.util.List;
 

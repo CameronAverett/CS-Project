@@ -17,21 +17,21 @@ public class GameResponse {
     private String formattedPrompt;
     private List<String> validResponses;
 
-    public GameResponse(Scanner in, String prompt, List<String> validResponses) {
-        this.in = in;
+    public GameResponse(String prompt, List<String> validResponses) {
+        this.in = Game.getInstance().getIn();
         this.prompt = prompt;
         this.formattedPrompt = prompt;
         this.validResponses = validResponses;
     }
 
-    public GameResponse(Scanner in, String prompt) {
-        this(in, prompt, new ArrayList<>());
+    public GameResponse(String prompt) {
+        this(prompt, new ArrayList<>());
     }
 
     public String getResponse(boolean removeResponse) {
         while (true) {
             System.out.print(formattedPrompt);
-            String response = in.next().toLowerCase();
+            String response = in.nextLine().toLowerCase();
             if (validResponses.isEmpty()) {
                 return response;
             } else if (hasResponse(response)) {
@@ -90,16 +90,16 @@ public class GameResponse {
         throw new GameResponseNotFoundException(validResponses, response);
     }
 
-    public int responseSize() {
-        return validResponses.size();
+    public List<String> getValidResponses() {
+        return validResponses;
     }
 
     public void formatPrompt(Object... args) {
         this.formattedPrompt = String.format(this.prompt, args);
     }
 
-    public static boolean getBinaryResponse(Scanner in, String prompt) {
-        GameResponse response = new GameResponse(in, prompt, List.of(BINARY_T, BINARY_F));
+    public static boolean getBinaryResponse(String prompt) {
+        GameResponse response = new GameResponse(prompt, List.of(BINARY_T, BINARY_F));
         return response.getResponse().equals(BINARY_T);
     }
 }

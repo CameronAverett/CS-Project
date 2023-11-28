@@ -2,7 +2,6 @@ package com.csproject.character;
 
 import com.csproject.character.effects.Effect;
 import com.csproject.character.effects.StatusEffect;
-import com.csproject.character.player.Player;
 import com.csproject.game.Game;
 
 import java.util.ArrayList;
@@ -91,9 +90,6 @@ public abstract class Character {
 
     public void levelUp() {
         this.level++;
-        if (this instanceof Player player) {
-            System.out.printf("%s has reached level %d%n", player.getName(), level);
-        }
     }
 
     public int getStrength() {
@@ -132,17 +128,14 @@ public abstract class Character {
         int agilityMultiplierCounter = 0;
         for (Effect appliedEffect : appliedStatusEffects) {
             damage += appliedEffect.damage();
-
             if (appliedEffect.strength() > 0.0) {
                 strengthMultiplier += appliedEffect.strength();
                 strengthMultiplierCounter++;
             }
-
             if (appliedEffect.intelligence() > 0.0) {
                 intelligenceMultiplier += appliedEffect.intelligence();
                 intelligenceMultiplierCounter++;
             }
-
             if (appliedEffect.agility() > 0.0) {
                 agilityMultiplier += appliedEffect.agility();
                 agilityMultiplierCounter++;
@@ -152,12 +145,12 @@ public abstract class Character {
         // Apply the averaged effects onto attributes
         if (damage > 0.0) dealDamage(damage);
         HashMap<String, Double> appliedAttributes = new HashMap<>();
-        appliedAttributes.put(STRENGTH, getStrength() * strengthMultiplierCounter > 0 ?
-                strengthMultiplier / strengthMultiplierCounter : 1.0);
-        appliedAttributes.put(INTELLIGENCE, getIntelligence() * intelligenceMultiplierCounter > 0 ?
-                intelligenceMultiplier / intelligenceMultiplierCounter : 1.0);
-        appliedAttributes.put(AGILITY, getAgility() * agilityMultiplierCounter > 0 ?
-                agilityMultiplier / agilityMultiplierCounter : 1.0);
+        appliedAttributes.put(STRENGTH, getStrength() * (strengthMultiplierCounter > 0 ?
+                strengthMultiplier / strengthMultiplierCounter : 1.0));
+        appliedAttributes.put(INTELLIGENCE, getIntelligence() * (intelligenceMultiplierCounter > 0 ?
+                intelligenceMultiplier / intelligenceMultiplierCounter : 1.0));
+        appliedAttributes.put(AGILITY, getAgility() * (agilityMultiplierCounter > 0 ?
+                agilityMultiplier / agilityMultiplierCounter : 1.0));
         return appliedAttributes;
     }
 

@@ -21,7 +21,7 @@ public class Warrior extends Player {
     }
     public CombatAction attack(Map<String, Double> appliedStats) {
         double attackDamage = appliedStats.get(STRENGTH) * 2;
-        double chance = CombatAction.calculateChance(4.2, -2, appliedStats.get(STRENGTH) / getLevel(), 0.95);
+        double chance = Game.calculateChance(4.2, -2, appliedStats.get(STRENGTH) / getLevel(), 0.95);
         return new CombatAction(ATTACK, attackDamage, chance);
     }
 
@@ -40,7 +40,7 @@ public class Warrior extends Player {
     public CombatAction combat() {
         Map<String, Double> appliedStats = applyEffects();
 
-        GameResponse response = new GameResponse(Game.getInstance().getIn(), "Which move do you want to use? ");
+        GameResponse response = new GameResponse("Which move do you want to use? ");
         response.setResponses(List.of(ATTACK, SHIELD, RAGE));
 
         response.displayResponses("\nAvailable Moves");

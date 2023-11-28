@@ -31,7 +31,7 @@ public class Mage extends Player {
     
     @Override
     public CombatAction combat() {
-        GameResponse response = new GameResponse(Game.getInstance().getIn(), "Which move do you want to use? ");
+        GameResponse response = new GameResponse("Which move do you want to use? ");
         response.setResponses(List.of(CAST_FIREBALL, SUMMON_ICE_BARRIER, TELEPORT));
 
         response.displayResponses("\nAvailable Moves");

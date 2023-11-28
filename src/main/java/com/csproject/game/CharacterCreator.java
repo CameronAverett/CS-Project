@@ -8,48 +8,44 @@ import java.util.*;
 
 public class CharacterCreator {
 
-    private final Scanner in;
+    public CharacterCreator() {}
 
-    public CharacterCreator(Scanner in) {
-        this.in = in;
-    }
-
-    private String getName() {
-        GameResponse response = new GameResponse(in, "What is your name? ");
+    private static String getName() {
+        GameResponse response = new GameResponse("What is your name? ");
         return response.getResponse();
     }
 
-    private String getPlayerClass() {
-        GameResponse response = new GameResponse(in, "Please select a class: ");
+    private static String getPlayerClass() {
+        GameResponse response = new GameResponse("Please select a class: ");
         response.setResponses(PlayerFactory.PLAYER_CLASSES);
 
         response.displayResponses("\nAvailable Classes");
         return response.getResponse();
     }
 
-    private HashMap<String, Integer> getStats() {
+    private static HashMap<String, Integer> getStats() {
         HashMap<String, Integer> stats = new HashMap<>();
         
         int[] genStats = Character.generateStats(1, 7, Character.CHARACTER_ATTRS.size());
 
         boolean selectedStats = false;
         while (!selectedStats) {
-            GameResponse response = new GameResponse(in, "Which stat should %d be assigned to? ", new ArrayList<>(Character.CHARACTER_ATTRS));
+            GameResponse response = new GameResponse("Which stat should %d be assigned to? ", new ArrayList<>(Character.CHARACTER_ATTRS));
             response.displayResponseData("\nGenerated stats", Arrays.stream(genStats).mapToObj(String::valueOf).toList());
 
             for (int i = 0; i < Character.CHARACTER_ATTRS.size(); i++) {
-                response.displayResponses("\nUnassigned stats");
+                response.displayResponses("\nUnassigned Stats");
                 response.formatPrompt(genStats[i]);
                 stats.put(response.getResponse(true), genStats[i]);
             }
 
-            selectedStats = GameResponse.getBinaryResponse(in, "Would you like to use these stats? ");
+            selectedStats = GameResponse.getBinaryResponse("Would you like to use these stats? ");
         }
         return stats;
     }
 
 
-    public Player createCharacter() {
+    public static Player createCharacter() {
         String playerName = getName();
         String playerClass = getPlayerClass();
         HashMap<String, Integer> stats = getStats();

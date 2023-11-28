@@ -72,32 +72,4 @@ public record CombatAction(String attack, double damage, double chance, StatusEf
                 action, chance * 100, consequence
         );
     }
-
-    private static double erf(double z) {
-        double t = 1.0 / (1.0 + 0.47047 * Math.abs(z));
-        double poly = t * (0.3480242 + t * (-0.0958798 + t * (0.7478556)));
-        double ans = 1.0 - poly * Math.exp(-z*z);
-        if (z >= 0) return  ans;
-        else return -ans;
-    }
-
-    // calculates the shaded percentage of a normal distribution function
-    // used to scale attack chance based off some double (stat)
-    public static double percentage(double std, double mean, double x) {
-        double z = (x - mean) / std;
-        return 0.5 * (1.0 + erf(z / (Math.sqrt(2.0))));
-    }
-
-    public static double percentage(double std, double x) {
-        return percentage(std, 3 * std, x);
-    }
-
-    public static double calculateChance(double std, double mean, double x, double maxChance) {
-        return maxChance * percentage(std, mean, x);
-    }
-
-    // https://www.desmos.com/calculator/ssejz0yc7i
-    public static double calculateChance(double std, double x, double maxChance) {
-        return maxChance * percentage(std, x);
-    }
 }

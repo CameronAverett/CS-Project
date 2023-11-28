@@ -31,7 +31,7 @@ public class Archer extends Player {
 
      @Override
     public CombatAction combat() {
-        GameResponse response = new GameResponse(Game.getInstance().getIn(), "Which move do you want to use? ");
+        GameResponse response = new GameResponse("Which move do you want to use? ");
         response.setResponses(List.of(SHOOT_ARROW, PRECISION_SHOT, EVASIVE_MANEUVER));
 
         response.displayResponses("\nAvailable Moves");
