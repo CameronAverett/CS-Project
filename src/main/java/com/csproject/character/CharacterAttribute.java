@@ -17,11 +17,6 @@ public class CharacterAttribute {
         this.value = value;
     }
 
-    public CharacterAttribute(CharacterAttribute base) {
-        this.name = base.name;
-        this.value = base.value;
-    }
-
     public String getName() {
         return this.name;
     }

@@ -101,14 +101,6 @@ public class Game {
         return in;
     }
 
-    public double getDifficulty() {
-        return this.difficulty;
-    }
-
-    private void scaleDifficulty() {
-        this.difficulty += DIFFICULTY_RATE;
-    }
-
     public int getPlayerLevel() {
         return player.getLevel();
     }
@@ -132,17 +124,10 @@ public class Game {
         return 0.5 * (1.0 + erf(z / (Math.sqrt(2.0))));
     }
 
-    public static double percentage(double std, double x) {
-        return percentage(std, 3 * std, x);
-    }
-
+    // need to make it based on the difference between the levels
+    // https://www.desmos.com/calculator/ssejz0yc7i
     public static double calculateChance(double std, double mean, double x, double maxChance) {
         return maxChance * percentage(std, mean, x);
-    }
-
-    // https://www.desmos.com/calculator/ssejz0yc7i
-    public static double calculateChance(double std, double x, double maxChance) {
-        return maxChance * percentage(std, x);
     }
 
     public static int getStatPoints() {
