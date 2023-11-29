@@ -1,6 +1,7 @@
 package com.csproject.character.player;
 
 import com.csproject.character.CombatAction;
+import com.csproject.character.SaveAction;
 import com.csproject.exceptions.character.CombatResponseException;
 import com.csproject.game.GameResponse;
 
@@ -48,5 +49,10 @@ public class Mage extends Player {
             }
             default -> throw new CombatResponseException(responseValue);
         }
+    }
+
+    @Override
+    public SaveAction saveChance() {
+        return null;
     }
 }

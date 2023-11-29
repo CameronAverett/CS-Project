@@ -31,6 +31,7 @@ public abstract class Character {
     protected final CharacterAttribute agilityAttr;
 
     protected List<StatusEffect> statusEffects = new ArrayList<>();
+    protected Map<String, Double> appliedStats = new HashMap<>();
 
     protected Character(int level, int strength, int intelligence, int agility) {
         this.level = level;
@@ -43,6 +44,7 @@ public abstract class Character {
     }
 
     public abstract CombatAction combat();
+    public abstract SaveAction saveChance();
 
     public abstract void displayStats();
 
@@ -108,7 +110,7 @@ public abstract class Character {
         return this.statusEffects;
     }
 
-    public Map<String, Double> applyEffects() {
+    public void applyEffects() {
         // Apply effects and remove the effects that have expired
         List<Effect> appliedStatusEffects = new ArrayList<>();
         for (StatusEffect effect : statusEffects) {
@@ -151,7 +153,7 @@ public abstract class Character {
                 intelligenceMultiplier / intelligenceMultiplierCounter : 1.0));
         appliedAttributes.put(AGILITY, getAgility() * (agilityMultiplierCounter > 0 ?
                 agilityMultiplier / agilityMultiplierCounter : 1.0));
-        return appliedAttributes;
+        this.appliedStats = appliedAttributes;
     }
 
     public static int[] generateStats(int min, int bound, int size) {

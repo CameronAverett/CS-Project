@@ -1,6 +1,7 @@
 package com.csproject.game;
 
 import com.csproject.character.CombatAction;
+import com.csproject.character.SaveAction;
 import com.csproject.character.monster.Monster;
 import com.csproject.character.monster.MonsterFactory;
 import com.csproject.character.player.Player;
@@ -11,6 +12,10 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class Game {
+
+    private static final double CHANCE_SCALAR = 6.5;
+    private static final double DEFAULT_MEAN = -4;
+    private static final double DEFAULT_STD = 4.2;
 
     private static final double DIFFICULTY_RATE = 0.1;
     private static final double LEVEL_UP_STATS = 10;
@@ -30,6 +35,7 @@ public class Game {
     private double difficulty = 1.0;
 
     private Player player;
+    private Monster enemy;
 
     private Game() {}
 
@@ -55,9 +61,9 @@ public class Game {
     }
 
     private boolean loop() {
-        Monster monster = MonsterFactory.get("Slime", 1, 4, 2, 6);
+        this.enemy = MonsterFactory.get("Slime", 1, 4, 2, 6);
 
-        while (!player.isDead() && !monster.isDead()) {
+        while (!player.isDead() && !enemy.isDead()) {
             boolean proceed = false;
             while (!proceed) {
                 GameResponse response = new GameResponse("What would you like to do? ", ACTIONS);
@@ -66,7 +72,7 @@ public class Game {
 
                 switch (receivedResponse) {
                     case DISPLAY_STATS -> player.displayStats();
-                    case DISPLAY_ENEMY_STATS -> monster.displayStats();
+                    case DISPLAY_ENEMY_STATS -> enemy.displayStats();
                     case PROCEED_TO_COMBAT -> proceed = true;
                     case END_GAME -> {
                         return false;
@@ -75,17 +81,36 @@ public class Game {
                 }
             }
 
-            CombatAction playerAction = player.combat();
-            playerAction.displayAction(player, monster);
+            player.applyEffects();
+            enemy.applyEffects();
 
-            if (playerAction.hit()) monster.dealDamage(playerAction.damage());
+            CombatAction playerAction = player.combat();
+            playerAction.displayAction(player, enemy);
+
+            double enemyDamage = playerAction.damage();
+            SaveAction enemySave = enemy.saveChance();
+            enemySave.displayAction(enemy, player);
+            if (enemySave.successful()) enemyDamage *= enemySave.damageReduction();
+
+            if (playerAction.hit()) enemy.dealDamage(enemyDamage);
+            if (enemy.isDead()) break;
+
+            CombatAction enemyAction = enemy.combat();
+            enemyAction.displayAction(enemy, player);
+
+            double playerDamage = playerAction.damage();
+            SaveAction playerSave = enemy.saveChance();
+            playerSave.displayAction(enemy, player);
+            if (enemySave.successful()) playerDamage *= playerSave.damageReduction();
+
+            if (enemyAction.hit()) player.dealDamage(playerDamage);
         }
 
         if (player.isDead()) {
             return false;
         }
 
-        player.increaseExp(monster.getXp());
+        player.increaseExp(enemy.getXp());
         return true;
     }
 
@@ -118,7 +143,7 @@ public class Game {
     }
 
     // calculates the shaded percentage of a normal distribution function
-    // used to scale attack chance based off some double (stat)
+    // used to scale action chance based off some double (stat)
     public static double percentage(double std, double mean, double x) {
         double z = (x - mean) / std;
         return 0.5 * (1.0 + erf(z / (Math.sqrt(2.0))));
@@ -128,6 +153,16 @@ public class Game {
     // https://www.desmos.com/calculator/ssejz0yc7i
     public static double calculateChance(double std, double mean, double x, double maxChance) {
         return maxChance * percentage(std, mean, x);
+    }
+
+    public static double calculatePlayerChance(double x, double maxChance) {
+        double z = CHANCE_SCALAR * ((x / Game.getInstance().enemy.getLevel()) - (x / Game.getInstance().player.getLevel()));
+        return calculateChance(DEFAULT_STD, DEFAULT_MEAN, z, maxChance);
+    }
+
+    public static double calculateEnemyChance(double x, double maxChance) {
+        double z = CHANCE_SCALAR * ((x / Game.getInstance().player.getLevel()) - (x / Game.getInstance().enemy.getLevel()));
+        return calculateChance(DEFAULT_STD, DEFAULT_MEAN, z, maxChance);
     }
 
     public static int getStatPoints() {
