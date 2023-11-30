@@ -4,7 +4,9 @@ import com.csproject.character.CombatAction;
 import com.csproject.character.SaveAction;
 import com.csproject.character.monster.Monster;
 import com.csproject.character.monster.MonsterFactory;
+import com.csproject.character.monster.Slime;
 import com.csproject.character.player.Player;
+import com.csproject.character.player.Warrior;
 import com.csproject.exceptions.game.GameResponseNotFoundException;
 
 import java.util.List;
@@ -13,9 +15,9 @@ import java.util.Scanner;
 
 public class Game {
 
-    private static final double CHANCE_SCALAR = 6.5;
-    private static final double DEFAULT_MEAN = -4;
-    private static final double DEFAULT_STD = 4.2;
+    private static final double CHANCE_SCALAR = 7.0;
+    private static final double DEFAULT_MEAN = -2.4;
+    private static final double DEFAULT_STD = 5.5;
 
     private static final double DIFFICULTY_RATE = 0.1;
     private static final double LEVEL_UP_STATS = 10;
@@ -156,12 +158,16 @@ public class Game {
     }
 
     public static double calculatePlayerChance(double x, double maxChance) {
-        double z = CHANCE_SCALAR * ((x / Game.getInstance().enemy.getLevel()) - (x / Game.getInstance().player.getLevel()));
+        int playerLevel = Game.getInstance().player.getLevel();
+        int enemyLevel = Game.getInstance().enemy.getLevel();
+        double z = (enemyLevel / CHANCE_SCALAR) * (((CHANCE_SCALAR * x * playerLevel) / enemyLevel) - ((double) enemyLevel / playerLevel)) ;
         return calculateChance(DEFAULT_STD, DEFAULT_MEAN, z, maxChance);
     }
 
     public static double calculateEnemyChance(double x, double maxChance) {
-        double z = CHANCE_SCALAR * ((x / Game.getInstance().player.getLevel()) - (x / Game.getInstance().enemy.getLevel()));
+        int playerLevel = Game.getInstance().player.getLevel();
+        int enemyLevel = Game.getInstance().enemy.getLevel();
+        double z = (playerLevel / CHANCE_SCALAR) * (((CHANCE_SCALAR * x * enemyLevel) / playerLevel) - ((double) playerLevel / enemyLevel)) ;
         return calculateChance(DEFAULT_STD, DEFAULT_MEAN, z, maxChance);
     }
 

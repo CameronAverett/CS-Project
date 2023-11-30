@@ -110,6 +110,10 @@ public abstract class Character {
         return this.statusEffects;
     }
 
+    public Map<String, Double> getAppliedStats() {
+        return this.appliedStats;
+    }
+
     public void applyEffects() {
         // Apply effects and remove the effects that have expired
         List<Effect> appliedStatusEffects = new ArrayList<>();
