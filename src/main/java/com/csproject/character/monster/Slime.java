@@ -1,6 +1,13 @@
 package com.csproject.character.monster;
 
 import com.csproject.character.CombatAction;
+import com.csproject.character.SaveAction;
+import com.csproject.character.effects.Effect;
+import com.csproject.character.effects.NoEffect;
+import com.csproject.game.Game;
+
+import java.util.Map;
+import java.util.Random;
 
 public class Slime extends Monster {
 
@@ -13,6 +20,20 @@ public class Slime extends Monster {
 
     @Override
     public CombatAction combat() {
-        return null;
+        double roll = Game.getRandom().nextDouble(0.0, 1.0);
+        if (roll <= 0.5) {
+            double chance = Game.calculateEnemyChance(appliedStats.get(STRENGTH), 0.95);
+            return new CombatAction("Attack", 2 * appliedStats.get(STRENGTH), chance);
+        } else {
+            double chance = Game.calculateEnemyChance(appliedStats.get(STRENGTH) + appliedStats.get(AGILITY), 0.85);
+            return new CombatAction("Power Attack", appliedStats.get(STRENGTH) + appliedStats.get(AGILITY), chance);
+        }
+    }
+
+    @Override
+    public SaveAction saveChance() {
+        double damageReduction = Game.calculateEnemyChance(appliedStats.get(STRENGTH), 0.5);
+        double chance = Game.calculateEnemyChance(appliedStats.get(STRENGTH) + appliedStats.get(AGILITY), 0.7);
+        return new SaveAction("Harden", damageReduction, chance);
     }
 }

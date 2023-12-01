@@ -1,14 +1,14 @@
 package com.csproject.character.player;
 
 import com.csproject.character.CombatAction;
-import com.csproject.character.CombatActionDisplay;
+import com.csproject.character.ActionDisplay;
+import com.csproject.character.SaveAction;
 import com.csproject.character.effects.NoEffect;
 import com.csproject.exceptions.character.CombatResponseException;
 import com.csproject.game.Game;
 import com.csproject.game.GameResponse;
 
 import java.util.List;
-import java.util.Map;
 
 public class Warrior extends Player {
 
@@ -19,44 +19,45 @@ public class Warrior extends Player {
     public Warrior(String name, int level, int strength, int intelligence, int agility) {
         super(name, level, strength, intelligence, agility);
     }
-    public CombatAction attack(Map<String, Double> appliedStats) {
+    public CombatAction attack() {
         double attackDamage = appliedStats.get(STRENGTH) * 2;
-        double chance = Game.calculateChance(4.2, -2, appliedStats.get(STRENGTH) / getLevel(), 0.95);
+        double chance = Game.calculatePlayerChance(appliedStats.get(STRENGTH), 0.95);
         return new CombatAction(ATTACK, attackDamage, chance);
     }
 
-    public CombatAction shieldBlock(Map<String, Double> appliedStats) {
-        double blockStrength = appliedStats.get(STRENGTH) + appliedStats.get(AGILITY);
-        return new CombatAction(SHIELD, blockStrength, 0.5);
+    public SaveAction shieldBlock() {
+        double damageReduction = Game.calculatePlayerChance(2 * appliedStats.get(STRENGTH), 0.5);
+        double chance = Game.calculatePlayerChance(appliedStats.get(STRENGTH) + appliedStats.get(ATTACK), 0.75);
+        return new SaveAction(SHIELD, damageReduction, chance);
     }
 
-    public CombatAction berserkerRage(Map<String, Double> appliedStats) {
-        CombatActionDisplay display = new CombatActionDisplay("\n[SELF] enters a berserker rage, gaining increased strength!",
+    public CombatAction berserkerRage() {
+        ActionDisplay display = new ActionDisplay("\n[SELF] enters a berserker rage, gaining increased strength!",
                 "\n[SELF] attempts to enter a berserker rage but fails.");
         return new CombatAction(RAGE, new NoEffect(), appliedStats.get(STRENGTH) >= 15 && getLevel() >= 10, display);
     }
 
     @Override
     public CombatAction combat() {
-        Map<String, Double> appliedStats = applyEffects();
-
         GameResponse response = new GameResponse("Which move do you want to use? ");
-        response.setResponses(List.of(ATTACK, SHIELD, RAGE));
+        response.setResponses(List.of(ATTACK, RAGE));
 
         response.displayResponses("\nAvailable Moves");
         String responseValue = response.getResponse();
 
         switch (responseValue) {
             case ATTACK -> {
-                return attack(appliedStats);
-            }
-            case SHIELD -> {
-                return shieldBlock(appliedStats);
+                return attack();
             }
             case RAGE -> {
-                return berserkerRage(appliedStats);
+                return berserkerRage();
             }
             default -> throw new CombatResponseException(responseValue);
         }
+    }
+
+    @Override
+    public SaveAction saveChance() {
+        return shieldBlock();
     }
 }
