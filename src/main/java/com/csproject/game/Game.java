@@ -1,5 +1,6 @@
 package com.csproject.game;
 
+import com.csproject.character.Character;
 import com.csproject.character.CombatAction;
 import com.csproject.character.SaveAction;
 import com.csproject.character.monster.Monster;
@@ -66,46 +67,12 @@ public class Game {
         this.enemy = MonsterFactory.get("Slime", 1, 4, 2, 6);
 
         while (!player.isDead() && !enemy.isDead()) {
-            boolean proceed = false;
-            while (!proceed) {
-                GameResponse response = new GameResponse("What would you like to do? ", ACTIONS);
-                response.displayResponses("\nAvailable Responses");
-                String receivedResponse = response.getResponse();
+            boolean shouldProceed = getPlayerAction();
+            if (!shouldProceed) return false;
 
-                switch (receivedResponse) {
-                    case DISPLAY_STATS -> player.displayStats();
-                    case DISPLAY_ENEMY_STATS -> enemy.displayStats();
-                    case PROCEED_TO_COMBAT -> proceed = true;
-                    case END_GAME -> {
-                        return false;
-                    }
-                    default -> throw new GameResponseNotFoundException(response.getValidResponses(), receivedResponse);
-                }
-            }
-
-            player.applyEffects();
-            enemy.applyEffects();
-
-            CombatAction playerAction = player.combat();
-            playerAction.displayAction(player, enemy);
-
-            double enemyDamage = playerAction.damage();
-            SaveAction enemySave = enemy.saveChance();
-            enemySave.displayAction(enemy, player);
-            if (enemySave.successful()) enemyDamage *= enemySave.damageReduction();
-
-            if (playerAction.hit()) enemy.dealDamage(enemyDamage);
+            combatTurn(player, enemy);
             if (enemy.isDead()) break;
-
-            CombatAction enemyAction = enemy.combat();
-            enemyAction.displayAction(enemy, player);
-
-            double playerDamage = playerAction.damage();
-            SaveAction playerSave = enemy.saveChance();
-            playerSave.displayAction(enemy, player);
-            if (enemySave.successful()) playerDamage *= playerSave.damageReduction();
-
-            if (enemyAction.hit()) player.dealDamage(playerDamage);
+            combatTurn(enemy, player);
         }
 
         if (player.isDead()) {
@@ -122,6 +89,39 @@ public class Game {
 
         System.out.printf("%nFinal Difficulty: %.2f", difficulty);
         player.displayStats();
+    }
+
+    private boolean getPlayerAction() {
+        boolean proceed = false;
+        while (!proceed) {
+            GameResponse response = new GameResponse("What would you like to do? ", ACTIONS);
+            response.displayResponses("\nAvailable Responses");
+            String receivedResponse = response.getResponse();
+
+            switch (receivedResponse) {
+                case DISPLAY_STATS -> player.displayStats();
+                case DISPLAY_ENEMY_STATS -> enemy.displayStats();
+                case PROCEED_TO_COMBAT -> proceed = true;
+                case END_GAME -> {
+                    return false;
+                }
+                default -> throw new GameResponseNotFoundException(response.getValidResponses(), receivedResponse);
+            }
+        }
+        return true;
+    }
+
+    private void combatTurn(Character attacker, Character defender) {
+        attacker.applyEffects();
+        CombatAction action = attacker.combat();
+        action.displayAction(attacker, defender);
+
+        double damage = action.damage();
+        SaveAction save = defender.saveChance();
+        save.displayAction(attacker, defender);
+        if (save.successful()) damage *= save.damageReduction();
+
+        if (action.hit()) defender.dealDamage(damage);
     }
 
     public Scanner getIn() {

@@ -18,7 +18,7 @@ public class Mage extends Player {
     }
 
     public CombatAction castFireball() {
-        return new CombatAction(CAST_FIREBALL, getAgility() * 2, 0.5);
+        return new CombatAction(CAST_FIREBALL, 2 * getAgility(), 0.5);
     }
 
     public CombatAction summonIceBarrier() {

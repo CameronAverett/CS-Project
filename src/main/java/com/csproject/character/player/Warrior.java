@@ -20,21 +20,21 @@ public class Warrior extends Player {
         super(name, level, strength, intelligence, agility);
     }
     public CombatAction attack() {
-        double attackDamage = appliedStats.get(STRENGTH) * 2;
-        double chance = Game.calculatePlayerChance(appliedStats.get(STRENGTH), 0.95);
+        double attackDamage = getStrength() * 2;
+        double chance = Game.calculatePlayerChance(getStrength(), 0.95);
         return new CombatAction(ATTACK, attackDamage, chance);
     }
 
     public SaveAction shieldBlock() {
-        double damageReduction = Game.calculatePlayerChance(2 * appliedStats.get(STRENGTH), 0.5);
-        double chance = Game.calculatePlayerChance(appliedStats.get(STRENGTH) + appliedStats.get(ATTACK), 0.75);
+        double damageReduction = Game.calculatePlayerChance(2 * getStrength(), 0.5);
+        double chance = Game.calculatePlayerChance(getStrength() + getAgility(), 0.75);
         return new SaveAction(SHIELD, damageReduction, chance);
     }
 
     public CombatAction berserkerRage() {
         ActionDisplay display = new ActionDisplay("\n[SELF] enters a berserker rage, gaining increased strength!",
                 "\n[SELF] attempts to enter a berserker rage but fails.");
-        return new CombatAction(RAGE, new NoEffect(), appliedStats.get(STRENGTH) >= 15 && getLevel() >= 10, display);
+        return new CombatAction(RAGE, new NoEffect(), getStrength() >= 15 && getLevel() >= 10, display);
     }
 
     @Override

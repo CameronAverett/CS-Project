@@ -41,6 +41,7 @@ public abstract class Character {
 
         this.hp = getMaxHp();
         this.mana = getMaxMana();
+        applyEffects();
     }
 
     public abstract CombatAction combat();
@@ -94,24 +95,20 @@ public abstract class Character {
         this.level++;
     }
 
-    public int getStrength() {
-        return strengthAttr.getValue();
+    public double getStrength() {
+        return appliedStats.get(STRENGTH);
     }
 
-    public int getIntelligence() {
-        return intelligenceAttr.getValue();
+    public double getIntelligence() {
+        return appliedStats.get(INTELLIGENCE);
     }
 
-    public int getAgility() {
-        return agilityAttr.getValue();
+    public double getAgility() {
+        return appliedStats.get(AGILITY);
     }
 
     public List<StatusEffect> getStatusEffects() {
         return this.statusEffects;
-    }
-
-    public Map<String, Double> getAppliedStats() {
-        return this.appliedStats;
     }
 
     public void applyEffects() {
