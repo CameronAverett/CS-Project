@@ -160,14 +160,14 @@ public class Game {
     public static double calculatePlayerChance(double x, double maxChance) {
         int playerLevel = Game.getInstance().player.getLevel();
         int enemyLevel = Game.getInstance().enemy.getLevel();
-        double z = (enemyLevel / CHANCE_SCALAR) * (((CHANCE_SCALAR * x * playerLevel) / enemyLevel) - ((double) enemyLevel / playerLevel)) ;
+        double z = (1 / CHANCE_SCALAR) * (((CHANCE_SCALAR * x * playerLevel) / enemyLevel) - ((enemyLevel * CHANCE_SCALAR)  / (playerLevel * x))) ;
         return calculateChance(DEFAULT_STD, DEFAULT_MEAN, z, maxChance);
     }
 
     public static double calculateEnemyChance(double x, double maxChance) {
         int playerLevel = Game.getInstance().player.getLevel();
         int enemyLevel = Game.getInstance().enemy.getLevel();
-        double z = (playerLevel / CHANCE_SCALAR) * (((CHANCE_SCALAR * x * enemyLevel) / playerLevel) - ((double) playerLevel / enemyLevel)) ;
+        double z = (1 / CHANCE_SCALAR) * (((CHANCE_SCALAR * x * enemyLevel) / playerLevel) - ((playerLevel * CHANCE_SCALAR) / (enemyLevel * x)));
         return calculateChance(DEFAULT_STD, DEFAULT_MEAN, z, maxChance);
     }
 
