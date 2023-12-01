@@ -8,7 +8,7 @@ import java.util.*;
 
 public class CharacterCreator {
 
-    public CharacterCreator() {}
+    private CharacterCreator() {}
 
     private static String getName() {
         GameResponse response = new GameResponse("What is your name? ");
