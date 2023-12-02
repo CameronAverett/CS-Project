@@ -43,6 +43,10 @@ public record CombatAction(String action, double damage, double chance, StatusEf
         this(attack, 0.0, 0.0, effect, hit);
     }
 
+    public CombatAction(String attack, boolean hit) {
+        this(attack, new NoEffect(), hit);
+    }
+
     public static boolean roll(double chance) {
         return Game.getRandom().nextDouble(0.0, 1.0001) < chance;
     }

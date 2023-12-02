@@ -41,7 +41,10 @@ public abstract class Character {
 
         this.hp = getMaxHp();
         this.mana = getMaxMana();
-        applyEffects();
+
+        appliedStats.put(STRENGTH, (double) strength);
+        appliedStats.put(INTELLIGENCE, (double) intelligence);
+        appliedStats.put(AGILITY, (double) agility);
     }
 
     public abstract CombatAction combat();
@@ -80,6 +83,13 @@ public abstract class Character {
         this.mana += mana;
         if (this.mana > this.getMaxMana()) {
             this.mana = getMaxMana();
+        }
+    }
+
+    public void consumeMana(double mana) {
+        this.mana -= mana;
+        if (this.mana < 0.0) {
+            this.mana = 0.0;
         }
     }
 

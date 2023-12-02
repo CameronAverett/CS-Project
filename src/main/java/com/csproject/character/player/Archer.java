@@ -12,23 +12,31 @@ public class Archer extends Player {
 
     private static final String SHOOT_ARROW = "Shoot Arrow";
     private static final String PRECISION_SHOT = "Precision Shot";
+    private static final String HEAL = "Heal";
     private static final String EVASIVE_MANEUVER = "Evasive Maneuver";
 
     public Archer(String name, int level, int strength, int intelligence, int agility) {
         super(name, level, strength, intelligence, agility);
     }
-    
-    public CombatAction shootArrow() {
-        return new CombatAction(SHOOT_ARROW, getStrength() + getAgility(), 0.5);
+
+    private CombatAction shootArrow() {
+        double chance = Game.calculatePlayerChance(getStrength() + getAgility(), 0.8);
+        return new CombatAction(SHOOT_ARROW, getStrength() + getAgility(), chance);
     }
-    
-    public CombatAction precisionShot() {
+
+    private CombatAction precisionShot() {
         return new CombatAction(PRECISION_SHOT, 10.0, getIntelligence() >= 15);
     }
-    
-    public SaveAction evasiveManeuver() {
+
+    private CombatAction heal() {
+        boolean canUse = getIntelligence() >= 8 && getMana() >= 10.0;
+        if (canUse) consumeMana(10.0);
+        return new CombatAction(HEAL, canUse);
+    }
+
+    private SaveAction evasiveManeuver() {
         double damageReduction = Game.calculatePlayerChance(getIntelligence() + getAgility(), 1.0);
-        double chance = Game.calculatePlayerChance(2 * getAgility(), 0.95);
+        double chance = Game.calculatePlayerChance(2.0 * getAgility(), 0.95);
         return new SaveAction(EVASIVE_MANEUVER, damageReduction, chance);
     }
 
@@ -36,6 +44,8 @@ public class Archer extends Player {
     public CombatAction combat() {
         GameResponse response = new GameResponse("Which move do you want to use? ");
         response.setResponses(List.of(SHOOT_ARROW, PRECISION_SHOT));
+
+        if (getLevel() >= 3) response.addResponse(HEAL);
 
         response.displayResponses("\nAvailable Moves");
         String responseValue = response.getResponse();
@@ -46,6 +56,9 @@ public class Archer extends Player {
             }
             case PRECISION_SHOT -> {
                 return precisionShot();
+            }
+            case HEAL -> {
+                return heal();
             }
             default -> throw new CombatResponseException(responseValue);
         }

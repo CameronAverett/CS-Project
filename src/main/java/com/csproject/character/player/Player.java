@@ -1,12 +1,10 @@
 package com.csproject.character.player;
 
 import com.csproject.character.Character;
-import com.csproject.character.CombatAction;
 import com.csproject.exceptions.game.GameResponseNotFoundException;
 import com.csproject.game.Game;
 import com.csproject.game.GameResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Player extends Character {
@@ -36,16 +34,16 @@ public abstract class Player extends Character {
                 ==============================
                 Lv: %d
                 Exp: %.2f%%
-                Hp: %s
-                Mp: %s
+                Hp: %.2f%%
+                Mp: %.2f%%
                 ==============================
                 Strength: %d
                 Intelligence: %d
                 Agility: %d
                 ==============================
                 """, name, this.getClass().getSimpleName(), score, getLevel(),
-                exp / getMaxExp(), getHp() + "/" + getMaxHp(), getMana() + "/" + getMaxMana(),
-                getStrength(), getIntelligence(), getAgility()
+                exp / getMaxExp(), (getHp() / getMaxHp()) * 100, (getMana() / getMaxMana()) * 100,
+                strengthAttr.getValue(), intelligenceAttr.getValue(), agilityAttr.getValue()
         );
     }
 

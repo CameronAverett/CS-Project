@@ -14,6 +14,7 @@ public class IncreaseStrength extends StatusEffect {
 
     @Override
     public Effect applyEffect() {
+        super.applyEffect();
         return new Effect(0.0, strength, 0.0, 0.0);
     }
 }

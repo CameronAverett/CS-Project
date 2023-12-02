@@ -2,10 +2,10 @@ package com.csproject.character;
 
 public record ActionDisplay(String success, String failure) {
 
-    public static final String DEFAULT_COMBAT_SUCCESS = "\n[TARGET] received [DAMAGE] damageReduction.";
+    public static final String DEFAULT_COMBAT_SUCCESS = "\n[TARGET] received [DAMAGE] damage.";
     public static final String DEFAULT_COMBAT_FAILURE = "";
 
-    public static final String DEFAULT_SAVE_SUCCESS = "\n[SELF] stopped [DAMAGE] from [TARGET]'s attack.";
+    public static final String DEFAULT_SAVE_SUCCESS = "\n[SELF] stopped [DAMAGE]% from [TARGET]'s attack.";
     public static final String DEFAULT_SAVE_FAILURE = "";
 
     public static final String SELF_IDENTIFIER = "(\\[SELF])";

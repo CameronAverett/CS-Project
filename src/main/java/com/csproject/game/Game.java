@@ -116,14 +116,15 @@ public class Game {
         CombatAction action = attacker.combat();
         action.displayAction(attacker, defender);
 
+        if (!action.hit()) return;
+
         double damage = action.damage();
         SaveAction save = defender.saveChance();
         if (save.successful()) {
-            save.displayAction(attacker, defender);
+            save.displayAction(defender, attacker);
             damage *= save.damageReduction();
         }
-
-        if (action.hit()) defender.dealDamage(damage);
+        defender.dealDamage(damage);
     }
 
     public Scanner getIn() {
@@ -138,7 +139,7 @@ public class Game {
         return random;
     }
 
-    public static double erf(double z) {
+    private static double erf(double z) {
         double t = 1.0 / (1.0 + 0.47047 * Math.abs(z));
         double poly = t * (0.3480242 + t * (-0.0958798 + t * (0.7478556)));
         double ans = 1.0 - poly * Math.exp(-z*z);
@@ -148,7 +149,7 @@ public class Game {
 
     // calculates the shaded percentage of a normal distribution function
     // used to scale action chance based off some double (stat)
-    public static double percentage(double std, double mean, double x) {
+    private static double percentage(double std, double mean, double x) {
         double z = (x - mean) / std;
         return 0.5 * (1.0 + erf(z / (Math.sqrt(2.0))));
     }
@@ -160,6 +161,7 @@ public class Game {
     }
 
     public static double calculatePlayerChance(double x, double maxChance) {
+        if (x == 0.0) return 0.0;
         int playerLevel = Game.getInstance().player.getLevel();
         int enemyLevel = Game.getInstance().enemy.getLevel();
         double z = (1 / CHANCE_SCALAR) * (((CHANCE_SCALAR * x * playerLevel) / enemyLevel) - ((enemyLevel * CHANCE_SCALAR)  / (playerLevel * x))) ;
@@ -167,6 +169,7 @@ public class Game {
     }
 
     public static double calculateEnemyChance(double x, double maxChance) {
+        if (x == 0.0) return 0.0;
         int playerLevel = Game.getInstance().player.getLevel();
         int enemyLevel = Game.getInstance().enemy.getLevel();
         double z = (1 / CHANCE_SCALAR) * (((CHANCE_SCALAR * x * enemyLevel) / playerLevel) - ((playerLevel * CHANCE_SCALAR) / (enemyLevel * x)));
