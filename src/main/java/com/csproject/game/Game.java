@@ -118,8 +118,10 @@ public class Game {
 
         double damage = action.damage();
         SaveAction save = defender.saveChance();
-        save.displayAction(attacker, defender);
-        if (save.successful()) damage *= save.damageReduction();
+        if (save.successful()) {
+            save.displayAction(attacker, defender);
+            damage *= save.damageReduction();
+        }
 
         if (action.hit()) defender.dealDamage(damage);
     }

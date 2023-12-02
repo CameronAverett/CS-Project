@@ -15,6 +15,7 @@ public class Warrior extends Player {
     private static final String ATTACK = "Attack";
     private static final String SHIELD = "Shield";
     private static final String RAGE = "Rage";
+    private static final String HEAL = "Heal";
 
     public Warrior(String name, int level, int strength, int intelligence, int agility) {
         super(name, level, strength, intelligence, agility);
@@ -52,12 +53,16 @@ public class Warrior extends Player {
             case RAGE -> {
                 return berserkerRage();
             }
+            case HEAL -> {
+
+            }
             default -> throw new CombatResponseException(responseValue);
         }
     }
 
     @Override
     public SaveAction saveChance() {
+        GameResponse response = new GameResponse("")
         return shieldBlock();
     }
 }

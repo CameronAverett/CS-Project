@@ -17,7 +17,7 @@ public record SaveAction(String action, double damageReduction, double chance, b
     }
 
     public static boolean roll(double chance) {
-        return Game.getRandom().nextDouble(0.0, 1.0) < chance;
+        return Game.getRandom().nextDouble(0.0, 1.0001) < chance;
     }
 
 

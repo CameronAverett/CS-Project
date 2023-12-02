@@ -3,6 +3,7 @@ package com.csproject.character.player;
 import com.csproject.character.CombatAction;
 import com.csproject.character.SaveAction;
 import com.csproject.exceptions.character.CombatResponseException;
+import com.csproject.game.Game;
 import com.csproject.game.GameResponse;
 
 import java.util.List;
@@ -25,14 +26,16 @@ public class Mage extends Player {
         return new CombatAction(SUMMON_ICE_BARRIER, getAgility() * 3, 0.5);
     }
 
-    public CombatAction teleport() {
-        return new CombatAction(TELEPORT, 0.0, getAgility() >= 20);
+    public SaveAction teleport() {
+        double damageReduction = Game.calculatePlayerChance(getIntelligence() + getAgility(), 1.0);
+        double chance = Game.calculatePlayerChance(getAgility(), 0.95);
+        return new SaveAction(TELEPORT, damageReduction, chance);
     }
     
     @Override
     public CombatAction combat() {
         GameResponse response = new GameResponse("Which move do you want to use? ");
-        response.setResponses(List.of(CAST_FIREBALL, SUMMON_ICE_BARRIER, TELEPORT));
+        response.setResponses(List.of(CAST_FIREBALL, SUMMON_ICE_BARRIER));
 
         response.displayResponses("\nAvailable Moves");
         String responseValue = response.getResponse();
@@ -44,15 +47,12 @@ public class Mage extends Player {
             case SUMMON_ICE_BARRIER -> {
                 return summonIceBarrier();
             }
-            case TELEPORT -> {
-                return teleport();
-            }
             default -> throw new CombatResponseException(responseValue);
         }
     }
 
     @Override
     public SaveAction saveChance() {
-        return null;
+        return teleport();
     }
 }

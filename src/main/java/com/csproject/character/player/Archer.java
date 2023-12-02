@@ -26,14 +26,16 @@ public class Archer extends Player {
         return new CombatAction(PRECISION_SHOT, 10.0, getIntelligence() >= 15);
     }
     
-    public CombatAction evasiveManeuver() {
-        return new CombatAction(EVASIVE_MANEUVER, 0.0, getAgility() >= 20);
+    public SaveAction evasiveManeuver() {
+        double damageReduction = Game.calculatePlayerChance(getIntelligence() + getAgility(), 1.0);
+        double chance = Game.calculatePlayerChance(2 * getAgility(), 0.95);
+        return new SaveAction(EVASIVE_MANEUVER, damageReduction, chance);
     }
 
      @Override
     public CombatAction combat() {
         GameResponse response = new GameResponse("Which move do you want to use? ");
-        response.setResponses(List.of(SHOOT_ARROW, PRECISION_SHOT, EVASIVE_MANEUVER));
+        response.setResponses(List.of(SHOOT_ARROW, PRECISION_SHOT));
 
         response.displayResponses("\nAvailable Moves");
         String responseValue = response.getResponse();
@@ -45,15 +47,12 @@ public class Archer extends Player {
             case PRECISION_SHOT -> {
                 return precisionShot();
             }
-            case EVASIVE_MANEUVER -> {
-                return evasiveManeuver();
-            }
             default -> throw new CombatResponseException(responseValue);
         }
     }
 
     @Override
     public SaveAction saveChance() {
-        return null;
+        return evasiveManeuver();
     }
 }

@@ -44,7 +44,7 @@ public record CombatAction(String action, double damage, double chance, StatusEf
     }
 
     public static boolean roll(double chance) {
-        return Game.getRandom().nextDouble(0.0, 1.0) < chance;
+        return Game.getRandom().nextDouble(0.0, 1.0001) < chance;
     }
 
 
