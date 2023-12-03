@@ -194,8 +194,26 @@ public class GameMap {
 	}
 
 	public void displayMap() {
-		StringBuilder mapDisplay = new StringBuilder();
+		System.out.printf(
+				"""
+    
+				---------------
+				| Map Legend  |
+				---------------
+				| Entrance: %s |
+				| Room:     %s |
+				| Exit:     %s |
+				| Player:   %s |
+				---------------
+				
+				""",
+				ENTRANCE_SYMBOL,
+				BASIC_ROOM_SYMBOL,
+				EXIT_SYMBOL,
+				PLAYER_SYMBOL
+		);
 
+		StringBuilder mapDisplay = new StringBuilder();
 		mapDisplay.append("--".repeat(getWidth() + 1)).append("-");
 		mapDisplay.append(System.lineSeparator());
 		for (int y = 0; y < getHeight(); y++) {
