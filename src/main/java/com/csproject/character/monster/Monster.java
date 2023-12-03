@@ -25,16 +25,16 @@ public abstract class Monster extends Character {
                 Xp: %.2f
                 ==============================
                 Lv: %d
-                Hp: %s
-                Mp: %s
+                Hp: %.2f%%
+                Mp: %.2f%%
                 ==============================
                 Strength: %d
                 Intelligence: %d
                 Agility: %d
                 ==============================
                 """, this.getClass().getSimpleName(), xp, getLevel(),
-                getHp() + "/" + getMaxHp(), getMana() + "/" + getMaxMana(),
-                getStrength(), getIntelligence(), getAgility()
+                (getHp() / getMaxHp()) * 100, (getMana() / getMaxMana()) * 100,
+                strengthAttr.getValue(), intelligenceAttr.getValue(), agilityAttr.getValue()
         );
     }
 

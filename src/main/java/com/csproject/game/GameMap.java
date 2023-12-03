@@ -1,183 +1,255 @@
 package com.csproject.game;
 
-import java.util.Random;
+import com.csproject.exceptions.game.GameMapCreationException;
+import com.csproject.exceptions.game.GameResponseNotFoundException;
+
+import java.util.*;
+
+interface GameMapCondition {
+	boolean call(int x, int y);
+}
+
+record Coordinate(int x, int y) {
+	public boolean equals(Coordinate other) {
+		return x == other.x && y == other.y;
+	}
+}
 
 public class GameMap {
+
+	private static final String NAV_UP = "Up";
+	private static final String NAV_LEFT = "Left";
+	private static final String NAV_DOWN = "Down";
+	private static final String NAV_RIGHT = "Right";
+	private static final String NAV_EXIT = "Exit";
+
+	private static final int DEFAULT_WIDTH = 13;
+	private static final int DEFAULT_HEIGHT = 13;
+
+	private static final String SEPARATOR = " ";
+	private static final String NO_ROOM_SYMBOL = " ";
+	private static final String BASIC_ROOM_SYMBOL = "#";
+	private static final String ENTRANCE_SYMBOL = "-";
+	private static final String EXIT_SYMBOL = "+";
+	private static final String PLAYER_SYMBOL = "*";
+
+	private static final int NO_ROOM = 0;
+	private static final int BASIC_ROOM = 1;
+	private static final int ENTRANCE = 2;
+	private static final int EXIT = 3;
+
+	private static final Random random = Game.getRandom();
+
+	private int[][] currentMap;
+	private HashMap<Coordinate, GameRoom> mapRooms;
+
+	private Coordinate location;
+	private Coordinate entrance;
+	private Coordinate exit;
 	
-	public GameMap () {}
-	
-	public int[][] createGameMap() {
-		return createGameMap(13, 13, 1.0);
-	}
-	
-	public int[][] createGameMap(double difficulty) {
-		return createGameMap(13, 13, difficulty);
+	public GameMap () {
+		createGameMap();
 	}
 
-	public int[][] createGameMap(int width, int length, double difficulty) {
-		width = (int)(width * difficulty);
-		length = (int)(width * difficulty);
-		int[][] map = new int[width][length];
-		
-		Random random = new Random();
-		
-		int entrX = 0, entrY = 0, exitX, exitY;
-		
-		switch(random.nextInt(5)) { // randomly choose between 5 maps
-			case(0) -> map = gridPath(width,length);
-			case(1) -> map = diamondPath(width,length);
-			case(2) -> map = concentricPath(width,length);
-			case(3) -> map = branchingPath(width,length);
-			case(4) -> map = branchingPath(width,length);
-		}
-		switch(random.nextInt(4)) { // random generates entrance between 4 spots
-			case(0):
-				map[1][0] = 2;
-				entrX = 1;
-				entrY = 0;
-				break;
-			case(1):
-				map[1][length-1] = 2;
-				entrX = 1;
-				entrY = length-1;
-				break;
-			case(2):
-				map[width-2][0] = 2;
-				entrX = width-2;
-				entrY = 0;
-				break;
-			case(3):
-				map[width-2][length-1] = 2;
-				entrX = width-2;
-				entrY = length-1;
-				break;
-		}
-		
-		exitX = random.nextInt(width);
-		exitY = getCoord(entrX, entrY, exitX, map);
-		
-		map[exitX][exitY] = 9;
-		
-		// 0 = no room
-		// 1 = room
-		// 2 = entrance
-		// 9 = exit
-		
-		return map;
-	}
-	
-	int[][] gridPath(int width, int length) {
-		int[][] map = new int[width][length];
-		
-		for (int x = 0; x < map.length; x++) {
-			for (int y = 0; y < map[x].length; y++) {
-				if (x%4==0 || y%6==0) {    // creates a a square shape with path every 4 and 6 spaces apart
-					map[x][y] = 1;
-				}
-			}
-		}
-		return map;
-		
-	}
-	
-	int[][] diamondPath(int width, int length) {
-		int[][] map = new int[width][length];
-		
-		for (int x = 0; x < map.length; x++) {
-			for (int y = 0; y < map[x].length; y++) {
-				if(x == width/2 || y == length/2) {  // creates a cross 
-					map[x][y] = 1;
-				}
-				if(x == y || x == y-1|| x == y+1){ // left diagonal
-					map[x][y] = 1;
-				}
-				if(x+y==length-1 || x+y==length-2 || x+y==length) { // right diagonal
-					map[x][y] = 1;
-				}
-			}
-		}
-		return map;
-	}
-	
-	int[][] concentricPath(int width, int length) {
-		int[][] map = new int[width][length];
+	public void createGameMap() {
+		double difficulty = Game.getInstance().getDifficulty();
+		int width = (int)(DEFAULT_WIDTH * difficulty);
+		int height = (int)(DEFAULT_HEIGHT * difficulty);
+		currentMap = createMapLayout(width, height);
 
-		for (int x = 0; x < map.length; x++) {
-			for (int y = 0; y < map[x].length; y++) {
-				if (x==0||y==0||x==width-1||y==length-1) { // outer square
-					map[x][y] = 1;
-				}
-				if (x==2||y==2||x==width-3||y==length-3) { // inner square
-					map[x][y] = 1;
-				}
-			}
+		switch(random.nextInt(4)) {
+			case (0) -> entrance = new Coordinate(1, 0);
+			case (1) -> entrance = new Coordinate(1, height - 1);
+			case (2) -> entrance = new Coordinate(width - 2, 0);
+			case (3) -> entrance = new Coordinate(width - 2, height - 1);
+			default -> throw new GameMapCreationException("Setting entrance location");
 		}
-		
-		return map;
-	}
-	
-	int[][] branchingPath(int width, int length) {
-		int[][] map = new int[width][length];
-		
-		for (int x = 0; x < map.length; x++) {
-			for (int y = 0; y < map[x].length; y++) {
-				if (x==1|| x==width-2 || x==width/3||y==length/3||x==(width/3)*2||y==(length/3)*2) { // outer square
-					map[x][y] = 1;
-				}
-			}
+
+		exit = new Coordinate(random.nextInt(width), random.nextInt(height));
+		while (!(getRoomType(exit) == BASIC_ROOM && getDistance(entrance, exit) > width * 0.6)) {
+			exit = new Coordinate(exit.x(), random.nextInt(height));
 		}
-		
-		return map;
-	}
-	
-	int[][] cornerPath(int width, int length) {
-		int[][] map = new int[width][length];
-		
-		for (int x = 0; x < map.length; x++) {
-			for (int y = 0; y < map[x].length; y++) {
-				if (x<width/3 && y<=length/3) {						 // top left corner
-					map[x][y] = 1;
-				}
-				if (x>(width-width/3-1) && x<width && y<=length/3) { // bottom left corner
-					map[x][y] = 1;
-				}
-				if (x<width/3 && y>(length-length/3-2)) {  		    // top right corner
-					map[x][y] = 1;
-				}
-				if (x>(width-width/3-1) && y>(length-length/3-2)) { // bottom left corner
-					map[x][y] = 1;
-				}
-				if (x==2||y==2||x==width-3||y==length-3) { // inner square
-					map[x][y] = 1;
-				}
-			}
-		}
-		
-		return map;
-	}	
-	
-	
-	public int getCoord(int a, int b, int c, int[][] arr) {
-		Random r = new Random();
-		int d = r.nextInt(arr[0].length);
-		
-		if (arr[c][d]==1 && getDist(a,b,c,d)>arr.length*.6) {
-			return d;
-		}
-		else {
-			return getCoord(a, b, c, arr);
-		}
-		
-	}
-	
-	public double getDist(int a, int b, int c, int d) {
-		// sqrt ((x2-x1)^2 + (y2-y1)^2)  
-		
-		double leftSide = Math.pow(c-a,2);
-		double rightSide = Math.pow(d-b,2);
-		double dist = Math.sqrt(leftSide + rightSide);
-		
-		return dist;
+
+		location = entrance;
+		currentMap[entrance.x()][entrance.y()] = ENTRANCE;
+		currentMap[exit.x()][exit.y()] = EXIT;
+
+		mapRooms = createRooms();
 	}
 
+	private int[][] createMapLayout(int width, int height) {
+		List<GameMapCondition> conditions = new ArrayList<>();
+		switch (random.nextInt(5)) {
+			case (0) -> {
+				conditions.add((x, y) -> x % 4 == 0);
+				conditions.add((x, y) -> y % 6 == 0);
+			}
+			case (1) -> {
+				conditions.add((x, y) -> x == width / 2);
+				conditions.add((x, y) -> y == height / 2);
+				conditions.add((x, y) -> x == y);
+				conditions.add((x, y) -> x == y - 1);
+				conditions.add((x, y) -> x == y + 1);
+				conditions.add((x, y) -> x + y == height - 1);
+				conditions.add((x, y) -> x + y == height - 2);
+				conditions.add((x, y) -> x + y == height);
+			}
+			case (2) -> {
+				conditions.add((x, y) -> x == 0);
+				conditions.add((x, y) -> y == 0);
+				conditions.add((x, y) -> x == width - 1);
+				conditions.add((x, y) -> y == height - 1);
+				conditions.add((x, y) -> x == 2);
+				conditions.add((x, y) -> y == 2);
+				conditions.add((x, y) -> x == width - 3);
+				conditions.add((x, y) -> y == height - 3);
+			}
+			case (3) -> {
+				conditions.add((x, y) -> x == 1);
+				conditions.add((x, y) -> x == width - 2);
+				conditions.add((x, y) -> x == width / 3);
+				conditions.add((x, y) -> y == height / 3);
+				conditions.add((x, y) -> x == (width / 3) * 2);
+				conditions.add((x, y) -> y == (height / 3) * 2);
+			}
+			case (4) -> {
+				conditions.add((x, y) -> x < width / 3 && y <= height / 3);
+				conditions.add((x, y) -> x > (width - width / 3 - 1) && x < width && y <= height / 3);
+				conditions.add((x, y) -> x < width / 3 && y > (height - height / 3 - 2));
+				conditions.add((x, y) -> x > (width - width / 3 - 1) && y > (height - height / 3 - 2));
+				conditions.add((x, y) -> x == 2);
+				conditions.add((x, y) -> y == 2);
+				conditions.add((x, y) -> x == width - 3);
+				conditions.add((x, y) -> y == height - 3);
+			}
+			default -> throw new GameMapCreationException("Creating map layout");
+		}
+		return createMapLayout(width, height, conditions);
+	}
+
+	private int[][] createMapLayout(int width, int height, List<GameMapCondition> conditions) {
+		int[][] map = new int[width][height];
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				boolean meetsCondition = false;
+				for (GameMapCondition condition : conditions) {
+					if (condition.call(x, y)) {
+						meetsCondition = true;
+						break;
+					}
+				}
+				map[x][y] = !meetsCondition ? NO_ROOM : BASIC_ROOM;
+			}
+		}
+		return map;
+	}
+
+	private HashMap<Coordinate, GameRoom> createRooms() {
+		HashMap<Coordinate, GameRoom> rooms = new HashMap<>();
+		for (int x = 0; x < getWidth(); x++) {
+			for (int y = 0; y < getHeight(); y++) {
+				Coordinate coordinate = new Coordinate(x, y);
+				if (getRoomType(coordinate) == BASIC_ROOM) {
+					rooms.put(coordinate, new GameRoom());
+				}
+			}
+		}
+		return rooms;
+	}
+
+	private double getDistance(Coordinate a, Coordinate b) {
+		double left = Math.pow(b.x() - a.x(), 2);
+		double right = Math.pow(b.y() - a.y(), 2);
+		return Math.sqrt(left + right);
+	}
+
+	private int getWidth() {
+		return currentMap.length;
+	}
+
+	private int getHeight() {
+		return currentMap[0].length;
+	}
+
+	private boolean isRoom(Coordinate coordinate) {
+		if (coordinate.x() < 0 || coordinate.x() >= getWidth()) return false;
+		if (coordinate.y() < 0 || coordinate.y() >= getHeight()) return false;
+		return getRoomType(coordinate) != NO_ROOM;
+	}
+
+	private int getRoomType(Coordinate coordinate) {
+		return currentMap[coordinate.x()][coordinate.y()];
+	}
+
+	public boolean inEntrance() {
+		return location.equals(entrance);
+	}
+
+	public boolean inExit() {
+		return location.equals(exit);
+	}
+
+	public GameRoom getCurrentRoom() {
+		return mapRooms.get(location);
+	}
+
+	public void displayMap() {
+		StringBuilder mapDisplay = new StringBuilder();
+
+		mapDisplay.append("--".repeat(getWidth() + 1)).append("-");
+		mapDisplay.append(System.lineSeparator());
+		for (int y = 0; y < getHeight(); y++) {
+			StringBuilder mapRow = new StringBuilder("| ");
+			for (int x = 0; x < getWidth(); x++) {
+				Coordinate coordinate = new Coordinate(x, y);
+
+				String symbol;
+				switch (getRoomType(new Coordinate(x, y))) {
+					case (NO_ROOM) -> symbol = NO_ROOM_SYMBOL;
+					case (BASIC_ROOM) -> symbol = BASIC_ROOM_SYMBOL;
+					case (ENTRANCE) -> symbol = ENTRANCE_SYMBOL;
+					case (EXIT) -> symbol = EXIT_SYMBOL;
+					default -> symbol = PLAYER_SYMBOL;
+				}
+				if (coordinate.equals(location)) {
+					symbol = PLAYER_SYMBOL;
+				}
+
+				mapRow.append(symbol);
+				mapRow.append(SEPARATOR);
+			}
+			mapRow.append("|");
+			mapDisplay.append(mapRow);
+			mapDisplay.append(System.lineSeparator());
+		}
+		mapDisplay.append("--".repeat(getWidth() + 1)).append("-");
+		mapDisplay.append(System.lineSeparator());
+		System.out.println(mapDisplay);
+	}
+
+	public void navigation() {
+		displayMap();
+
+		GameResponse response = new GameResponse("Where would you like to go? ");
+		if (isRoom(new Coordinate(location.x(), location.y() - 1))) response.addResponse(NAV_UP);
+		if (isRoom(new Coordinate(location.x() - 1, location.y()))) response.addResponse(NAV_LEFT);
+		if (isRoom(new Coordinate(location.x(), location.y() + 1))) response.addResponse(NAV_DOWN);
+		if (isRoom(new Coordinate(location.x() + 1, location.y()))) response.addResponse(NAV_RIGHT);
+		if (location.equals(exit)) response.addResponse(NAV_EXIT);
+
+		response.displayResponses("\nAvailable Actions");
+		String receivedResponse = response.getResponse();
+
+		switch (receivedResponse) {
+			case (NAV_UP) -> location = new Coordinate(location.x(), location.y() - 1);
+			case (NAV_LEFT) -> location = new Coordinate(location.x() - 1, location.y());
+			case (NAV_DOWN) -> location = new Coordinate(location.x(), location.y() + 1);
+			case (NAV_RIGHT) -> location = new Coordinate(location.x() + 1, location.y());
+			case (NAV_EXIT) -> {
+				Game.getInstance().scaleDifficulty();
+				createGameMap();
+			}
+			default -> throw new GameResponseNotFoundException(response.getValidResponses(), receivedResponse);
+		}
+	}
 }

@@ -10,6 +10,7 @@ import com.csproject.character.player.Player;
 import com.csproject.character.player.Warrior;
 import com.csproject.exceptions.game.GameResponseNotFoundException;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -37,6 +38,7 @@ public class Game {
     private final Scanner in = new Scanner(System.in);
     private double difficulty = 1.0;
 
+    private GameMap map;
     private Player player;
     private Monster enemy;
 
@@ -61,10 +63,17 @@ public class Game {
 
     private void initialize() {
         this.player = CharacterCreator.createCharacter();
+        this.map = new GameMap();
     }
 
     private boolean loop() {
-        this.enemy = MonsterFactory.get("Slime", 1, 4, 2, 6);
+        map.navigation();
+        if (map.inEntrance() || map.inExit()) {
+            return true;
+        }
+
+        this.enemy = map.getCurrentRoom().getMonster();
+        if (enemy == null) return true;
 
         while (!player.isDead() && !enemy.isDead()) {
             boolean shouldProceed = getPlayerAction();
@@ -89,6 +98,11 @@ public class Game {
 
         System.out.printf("%nFinal Difficulty: %.2f", difficulty);
         player.displayStats();
+    }
+
+    public void test() {
+        GameMap map = new GameMap();
+        map.displayMap();
     }
 
     private boolean getPlayerAction() {
@@ -129,6 +143,14 @@ public class Game {
 
     public Scanner getIn() {
         return in;
+    }
+
+    public double getDifficulty() {
+        return difficulty;
+    }
+
+    public void scaleDifficulty() {
+        difficulty += DIFFICULTY_RATE;
     }
 
     public int getPlayerLevel() {
