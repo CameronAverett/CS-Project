@@ -17,6 +17,12 @@ import java.util.Scanner;
 
 public class Game {
 
+    private static final String NAV_UP = "Up";
+    private static final String NAV_LEFT = "Left";
+    private static final String NAV_DOWN = "Down";
+    private static final String NAV_RIGHT = "Right";
+    private static final String NAV_EXIT = "Exit";
+
     private static final double CHANCE_SCALAR = 7.0;
     private static final double DEFAULT_MEAN = -2.4;
     private static final double DEFAULT_STD = 5.5;
@@ -67,13 +73,18 @@ public class Game {
     }
 
     private boolean loop() {
-        map.navigation();
+        boolean shouldContinue = navigation();
+        if (!shouldContinue) return false;
+
         if (map.inEntrance() || map.inExit()) {
             return true;
         }
 
         this.enemy = map.getCurrentRoom().getMonster();
         if (enemy == null) return true;
+
+        String enemyName = enemy.getClass().getSimpleName();
+        System.out.printf("%n%s as encountered a %s!%n", player.getName(), enemyName);
 
         while (!player.isDead() && !enemy.isDead()) {
             boolean shouldProceed = getPlayerAction();
@@ -83,10 +94,10 @@ public class Game {
             if (enemy.isDead()) break;
             combatTurn(enemy, player);
         }
+        if (player.isDead()) return false;
 
-        if (player.isDead()) {
-            return false;
-        }
+        System.out.printf("%n%s has defeated the %s!", player.getName(), enemyName);
+        System.out.printf("%n%.2f exp has been awarded!%n", enemy.getXp());
 
         player.increaseExp(enemy.getXp());
         return true;
@@ -98,11 +109,6 @@ public class Game {
 
         System.out.printf("%nFinal Difficulty: %.2f", difficulty);
         player.displayStats();
-    }
-
-    public void test() {
-        GameMap map = new GameMap();
-        map.displayMap();
     }
 
     private boolean getPlayerAction() {
@@ -139,6 +145,40 @@ public class Game {
             damage *= save.damageReduction();
         }
         defender.dealDamage(damage);
+    }
+
+    public boolean navigation() {
+        map.displayMap();
+
+        Coordinate location = map.getLocation();
+
+        GameResponse response = new GameResponse("Where would you like to go? ");
+        if (map.isRoom(new Coordinate(location.x(), location.y() - 1))) response.addResponse(NAV_UP);
+        if (map.isRoom(new Coordinate(location.x() - 1, location.y()))) response.addResponse(NAV_LEFT);
+        if (map.isRoom(new Coordinate(location.x(), location.y() + 1))) response.addResponse(NAV_DOWN);
+        if (map.isRoom(new Coordinate(location.x() + 1, location.y()))) response.addResponse(NAV_RIGHT);
+        if (location.equals(map.getEntrance())) response.addResponse(NAV_EXIT);
+        response.addResponse(END_GAME);
+
+        response.displayResponses("\nAvailable Actions");
+        String receivedResponse = response.getResponse();
+
+        switch (receivedResponse) {
+            case (NAV_UP) -> map.setLocation(new Coordinate(location.x(), location.y() - 1));
+            case (NAV_LEFT) -> map.setLocation(new Coordinate(location.x() - 1, location.y()));
+            case (NAV_DOWN) -> map.setLocation(new Coordinate(location.x(), location.y() + 1));
+            case (NAV_RIGHT) -> map.setLocation(new Coordinate(location.x() + 1, location.y()));
+            case (NAV_EXIT) -> {
+                scaleDifficulty();
+                map.createGameMap();
+                player.heal(player.getMaxHp());
+            }
+            case (END_GAME) -> {
+                return false;
+            }
+            default -> throw new GameResponseNotFoundException(response.getValidResponses(), receivedResponse);
+        }
+        return true;
     }
 
     public Scanner getIn() {

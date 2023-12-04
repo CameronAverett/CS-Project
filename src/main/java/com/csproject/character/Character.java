@@ -17,10 +17,10 @@ public abstract class Character {
 
     public static final List<String> CHARACTER_ATTRS = List.of(STRENGTH, INTELLIGENCE, AGILITY);
 
-    private static final double BASE_HP = 100;
     private static final double HP_PER_LEVEL = 10;
-
     private static final double MANA_PER_INTELLIGENCE = 25;
+
+    private final double baseHp;
 
     private double hp;
     private double mana;
@@ -33,12 +33,13 @@ public abstract class Character {
     protected List<StatusEffect> statusEffects = new ArrayList<>();
     protected Map<String, Double> appliedStats = new HashMap<>();
 
-    protected Character(int level, int strength, int intelligence, int agility) {
+    protected Character(double baseHp, int level, int strength, int intelligence, int agility) {
         this.level = level;
         this.strengthAttr = new CharacterAttribute(STRENGTH, strength);
         this.intelligenceAttr = new CharacterAttribute(INTELLIGENCE, intelligence);
         this.agilityAttr = new CharacterAttribute(AGILITY, agility);
 
+        this.baseHp = baseHp;
         this.hp = getMaxHp();
         this.mana = getMaxMana();
 
@@ -68,7 +69,7 @@ public abstract class Character {
     }
 
     public double getMaxHp() {
-        return BASE_HP + (HP_PER_LEVEL * (this.level - 1));
+        return baseHp + (HP_PER_LEVEL * (this.level - 1));
     }
 
     public boolean isDead() {

@@ -9,6 +9,8 @@ import java.util.List;
 
 public abstract class Player extends Character {
 
+    private static final double BASE_HP = 100.0;
+
     private static final double BASE_EXP = 100.0;
     private static final double EXP_PER_LEVEL = 10.0;
 
@@ -18,7 +20,7 @@ public abstract class Player extends Character {
     private double exp = 0.0;
 
     protected Player(String name, int level, int strength, int intelligence, int agility) {
-        super(level, strength, intelligence, agility);
+        super(BASE_HP, level, strength, intelligence, agility);
         this.name = name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 

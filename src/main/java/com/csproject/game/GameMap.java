@@ -17,12 +17,6 @@ record Coordinate(int x, int y) {
 
 public class GameMap {
 
-	private static final String NAV_UP = "Up";
-	private static final String NAV_LEFT = "Left";
-	private static final String NAV_DOWN = "Down";
-	private static final String NAV_RIGHT = "Right";
-	private static final String NAV_EXIT = "Exit";
-
 	private static final int DEFAULT_WIDTH = 13;
 	private static final int DEFAULT_HEIGHT = 13;
 
@@ -53,6 +47,9 @@ public class GameMap {
 
 	public void createGameMap() {
 		double difficulty = Game.getInstance().getDifficulty();
+
+		System.out.printf("%nCreating game map with difficulty %.2f.%n", difficulty);
+
 		int width = (int)(DEFAULT_WIDTH * difficulty);
 		int height = (int)(DEFAULT_HEIGHT * difficulty);
 		currentMap = createMapLayout(width, height);
@@ -171,7 +168,23 @@ public class GameMap {
 		return currentMap[0].length;
 	}
 
-	private boolean isRoom(Coordinate coordinate) {
+	public Coordinate getLocation() {
+		return location;
+	}
+
+	public void setLocation(Coordinate location) {
+		this.location = location;
+	}
+
+	public Coordinate getEntrance() {
+		return entrance;
+	}
+
+	public Coordinate getExit() {
+		return exit;
+	}
+
+	public boolean isRoom(Coordinate coordinate) {
 		if (coordinate.x() < 0 || coordinate.x() >= getWidth()) return false;
 		if (coordinate.y() < 0 || coordinate.y() >= getHeight()) return false;
 		return getRoomType(coordinate) != NO_ROOM;
@@ -243,31 +256,5 @@ public class GameMap {
 		mapDisplay.append("--".repeat(getWidth() + 1)).append("-");
 		mapDisplay.append(System.lineSeparator());
 		System.out.println(mapDisplay);
-	}
-
-	public void navigation() {
-		displayMap();
-
-		GameResponse response = new GameResponse("Where would you like to go? ");
-		if (isRoom(new Coordinate(location.x(), location.y() - 1))) response.addResponse(NAV_UP);
-		if (isRoom(new Coordinate(location.x() - 1, location.y()))) response.addResponse(NAV_LEFT);
-		if (isRoom(new Coordinate(location.x(), location.y() + 1))) response.addResponse(NAV_DOWN);
-		if (isRoom(new Coordinate(location.x() + 1, location.y()))) response.addResponse(NAV_RIGHT);
-		if (location.equals(exit)) response.addResponse(NAV_EXIT);
-
-		response.displayResponses("\nAvailable Actions");
-		String receivedResponse = response.getResponse();
-
-		switch (receivedResponse) {
-			case (NAV_UP) -> location = new Coordinate(location.x(), location.y() - 1);
-			case (NAV_LEFT) -> location = new Coordinate(location.x() - 1, location.y());
-			case (NAV_DOWN) -> location = new Coordinate(location.x(), location.y() + 1);
-			case (NAV_RIGHT) -> location = new Coordinate(location.x() + 1, location.y());
-			case (NAV_EXIT) -> {
-				Game.getInstance().scaleDifficulty();
-				createGameMap();
-			}
-			default -> throw new GameResponseNotFoundException(response.getValidResponses(), receivedResponse);
-		}
 	}
 }

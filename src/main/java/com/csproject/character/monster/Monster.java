@@ -5,13 +5,15 @@ import com.csproject.game.Game;
 
 public abstract class Monster extends Character {
 
+    private static final double BASE_HP = 20.0;
+
     private static final double LEVEL_DIFFERENCE_RATE = 1.7;
     private static final double DIFFERENCE_SCALE_RATE = 3.0;
 
     private final double xp;
 
     protected Monster(double xp, int level, int strength, int intelligence, int agility) {
-        super(level, strength, intelligence, agility);
+        super(BASE_HP, level, strength, intelligence, agility);
         this.xp = calculateXp(level, xp);
     }
 
