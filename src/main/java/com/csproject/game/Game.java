@@ -194,10 +194,6 @@ public class Game {
         difficulty += DIFFICULTY_RATE;
     }
 
-    public int getPlayerLevel() {
-        return player.getLevel();
-    }
-
     public static Random getRandom() {
         return random;
     }

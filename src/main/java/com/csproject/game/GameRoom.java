@@ -8,6 +8,8 @@ import java.util.Random;
 public class GameRoom {
 
 	private static final String SLIME = "Slime";
+	private static final String SKELETON = "Skeleton";
+	private static final String ZOMBIE = "Zombie";
 
 	private static final Random random = Game.getRandom();
 
@@ -26,7 +28,7 @@ public class GameRoom {
 		double roll = random.nextDouble(100) * difficulty;
 		if (roll < 70) return null;
 
-		String[] monsterTypes = {SLIME};
+		String[] monsterTypes = {SLIME, SKELETON, ZOMBIE};
 		String monsterClass = monsterTypes[random.nextInt(monsterTypes.length)];
 		return MonsterFactory.get(monsterClass, (int) Math.ceil(difficulty));
 	}

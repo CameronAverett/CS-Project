@@ -16,7 +16,7 @@ public class Slime extends Monster {
     @Override
     public CombatAction combat() {
         double roll = Game.getRandom().nextDouble(0.0, 1.0);
-        if (roll <= 0.5) {
+        if (roll <= 0.7) {
             double chance = Game.calculateEnemyChance(appliedStats.get(STRENGTH), 0.95);
             return new CombatAction("Attack", 2 * appliedStats.get(STRENGTH), chance);
         } else {

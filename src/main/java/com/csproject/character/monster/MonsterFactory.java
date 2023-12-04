@@ -9,6 +9,7 @@ public class MonsterFactory {
 
     private static final String SLIME = "Slime";
     private static final String SKELETON = "Skeleton";
+    private static final String ZOMBIE = "Zombie";
 
     private MonsterFactory() {}
 
@@ -21,7 +22,10 @@ public class MonsterFactory {
                 return new Slime(level, stats[1], stats[0], stats[2]);
             }
             case SKELETON -> {
-                return new Skeleton(level, stats[1], stats[0], stats[2]);
+                return new Skeleton(level, stats[2], stats[0], stats[1]);
+            }
+            case ZOMBIE -> {
+                return new Zombie(level, stats[1], stats[2], stats[0]);
             }
             default -> throw new MonsterClassException(monsterClass);
         }
