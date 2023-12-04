@@ -2,12 +2,7 @@ package com.csproject.character.monster;
 
 import com.csproject.character.CombatAction;
 import com.csproject.character.SaveAction;
-import com.csproject.character.effects.Effect;
-import com.csproject.character.effects.NoEffect;
 import com.csproject.game.Game;
-
-import java.util.Map;
-import java.util.Random;
 
 public class Slime extends Monster {
 

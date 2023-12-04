@@ -1,6 +1,5 @@
 package com.csproject.game;
 
-import com.csproject.character.Character;
 import com.csproject.character.monster.Monster;
 import com.csproject.character.monster.MonsterFactory;
 
@@ -13,10 +12,14 @@ public class GameRoom {
 	private static final Random random = Game.getRandom();
 
 	private final Monster monster;
+
+	private GameRoom(boolean empty) {
+		double difficulty = empty ? 0.0 : Game.getInstance().getDifficulty();
+		this.monster = createMonster(difficulty);
+	}
 	
 	public GameRoom() {
-		double difficulty = Game.getInstance().getDifficulty();
-		this.monster = createMonster(difficulty);
+		this(false);
 	}
 
 	private Monster createMonster(double difficulty) {
@@ -30,5 +33,9 @@ public class GameRoom {
 
 	public Monster getMonster() {
 		return monster;
+	}
+
+	public static GameRoom createEmptyRoom() {
+		return new GameRoom(true);
 	}
 }

@@ -146,9 +146,10 @@ public class GameMap {
 		for (int x = 0; x < getWidth(); x++) {
 			for (int y = 0; y < getHeight(); y++) {
 				Coordinate coordinate = new Coordinate(x, y);
-				if (getRoomType(coordinate) == BASIC_ROOM) {
-					rooms.put(coordinate, new GameRoom());
-				}
+				int roomType = getRoomType(coordinate);
+				if (roomType == NO_ROOM) continue;
+				rooms.put(coordinate, roomType == BASIC_ROOM ?
+						new GameRoom() : GameRoom.createEmptyRoom());
 			}
 		}
 		return rooms;

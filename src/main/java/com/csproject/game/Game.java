@@ -27,6 +27,9 @@ public class Game {
     private static final double DEFAULT_MEAN = -2.4;
     private static final double DEFAULT_STD = 5.5;
 
+    private static final double LEVEL_DIFFERENCE_RATE = 1.7;
+    private static final double DIFFERENCE_SCALE_RATE = 3.0;
+
     private static final double DIFFICULTY_RATE = 0.1;
     private static final double LEVEL_UP_STATS = 10;
 
@@ -76,16 +79,13 @@ public class Game {
         boolean shouldContinue = navigation();
         if (!shouldContinue) return false;
 
-        if (map.inEntrance() || map.inExit()) {
-            return true;
-        }
-
         this.enemy = map.getCurrentRoom().getMonster();
         if (enemy == null) return true;
 
         String enemyName = enemy.getClass().getSimpleName();
         System.out.printf("%n%s as encountered a %s!%n", player.getName(), enemyName);
 
+        // Handle Combat Loop
         while (!player.isDead() && !enemy.isDead()) {
             boolean shouldProceed = getPlayerAction();
             if (!shouldProceed) return false;
@@ -96,10 +96,11 @@ public class Game {
         }
         if (player.isDead()) return false;
 
+        double xp = calculateXp(enemy.getXp());
         System.out.printf("%n%s has defeated the %s!", player.getName(), enemyName);
-        System.out.printf("%n%.2f exp has been awarded!%n", enemy.getXp());
+        System.out.printf("%n%.2f exp has been awarded!%n", xp);
+        player.increaseExp(xp);
 
-        player.increaseExp(enemy.getXp());
         return true;
     }
 
@@ -240,5 +241,13 @@ public class Game {
 
     public static int getStatPoints() {
         return (int) Math.floor(LEVEL_UP_STATS * erf(1 / getInstance().difficulty));
+    }
+
+    // Method used to calculate xp earned based on the level difference between enemy and player
+    // returns xp * exp([multiplier * (enemy level - player level)] / [another multiplier * enemy level])
+    private double calculateXp(double xp) {
+        double numerator = LEVEL_DIFFERENCE_RATE * (enemy.getLevel() - player.getLevel());
+        double denominator = DIFFERENCE_SCALE_RATE * enemy.getLevel();
+        return xp * Math.exp(numerator / denominator);
     }
 }

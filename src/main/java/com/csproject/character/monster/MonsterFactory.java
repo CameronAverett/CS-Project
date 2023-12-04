@@ -8,6 +8,7 @@ import java.util.Arrays;
 public class MonsterFactory {
 
     private static final String SLIME = "Slime";
+    private static final String SKELETON = "Skeleton";
 
     private MonsterFactory() {}
 
@@ -18,6 +19,9 @@ public class MonsterFactory {
         switch (monsterClass) {
             case SLIME -> {
                 return new Slime(level, stats[1], stats[0], stats[2]);
+            }
+            case SKELETON -> {
+                return new Skeleton(level, stats[1], stats[0], stats[2]);
             }
             default -> throw new MonsterClassException(monsterClass);
         }
