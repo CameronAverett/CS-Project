@@ -2,7 +2,7 @@ package com.csproject.character.player;
 
 import com.csproject.character.CombatAction;
 import com.csproject.character.SaveAction;
-import com.csproject.exceptions.character.CombatResponseException;
+import com.csproject.exceptions.character.CharacterCombatResponseException;
 import com.csproject.game.Game;
 import com.csproject.game.GameResponse;
 
@@ -61,7 +61,7 @@ public class Archer extends Player {
             case HEAL -> {
                 return heal();
             }
-            default -> throw new CombatResponseException(responseValue);
+            default -> throw new CharacterCombatResponseException(responseValue);
         }
     }
 

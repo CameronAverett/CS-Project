@@ -4,7 +4,7 @@ import com.csproject.character.CombatAction;
 import com.csproject.character.ActionDisplay;
 import com.csproject.character.SaveAction;
 import com.csproject.character.effects.IncreaseStrength;
-import com.csproject.exceptions.character.CombatResponseException;
+import com.csproject.exceptions.character.CharacterCombatResponseException;
 import com.csproject.game.Game;
 import com.csproject.game.GameResponse;
 
@@ -78,7 +78,7 @@ public class Warrior extends Player {
             case RAGE -> {
                 return berserkerRage();
             }
-            default -> throw new CombatResponseException(responseValue);
+            default -> throw new CharacterCombatResponseException(responseValue);
         }
     }
 
