@@ -28,6 +28,7 @@ public class GameResponse {
         this(prompt, new ArrayList<>());
     }
 
+    // Get the response from the user. If responses should be removed, it removes them from the validResponses list.
     public String getResponse(boolean removeResponse) {
         while (true) {
             System.out.print(formattedPrompt);
@@ -46,6 +47,7 @@ public class GameResponse {
         return this.getResponse(false);
     }
 
+    // Displays data necessary for response but not stored in gameResponse class.
     public void displayResponseData(String title, List<String> data) {
         System.out.println(title);
         for (String dataPoint : data) {
@@ -53,6 +55,7 @@ public class GameResponse {
         }
     }
 
+    // Displays all the valid responses under a given title.
     public void displayResponses(String title) {
         System.out.println(title);
         for (String response : validResponses) {
@@ -72,15 +75,18 @@ public class GameResponse {
         validResponses.add(response);
     }
 
+    // Method to remove a given response from the validResponses list.
     public boolean removeResponse(String response) {
         return validResponses.removeIf(validResponse -> response.equals(validResponse.toLowerCase()));
     }
 
+    // Method to determine if a given response is in the validResponses list.
     public boolean hasResponse(String response) {
         List<String> responses = validResponses.stream().map(String::toLowerCase).toList();
         return responses.contains(response.toLowerCase());
     }
 
+    // Method to format response to the same format as the corresponded valid response.
     public String getFormattedResponse(String response) {
         for (String validResponse : validResponses) {
             if (response.equals(validResponse.toLowerCase())) {
@@ -94,10 +100,12 @@ public class GameResponse {
         return validResponses;
     }
 
+    // Format the prompt with the specified arguments. Should only be used if the prompt contains the correct placeholder value.
     public void formatPrompt(Object... args) {
         this.formattedPrompt = String.format(this.prompt, args);
     }
 
+    // Returns the response of a yes or no prompted response
     public static boolean getBinaryResponse(String prompt) {
         GameResponse response = new GameResponse(prompt, List.of(BINARY_T, BINARY_F));
         return response.getResponse().equals(BINARY_T);

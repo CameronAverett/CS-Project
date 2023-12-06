@@ -52,6 +52,7 @@ public class Warrior extends Player {
         return new SaveAction(SHIELD, damageReduction, chance);
     }
 
+    // Handles combat for the Warrior class
     @Override
     public CombatAction combat() {
         GameResponse response = new GameResponse("Which move do you want to use? ");
@@ -81,6 +82,7 @@ public class Warrior extends Player {
         }
     }
 
+    // Handles save chance for the Warrior class
     @Override
     public SaveAction saveChance() {
         return shieldBlock();

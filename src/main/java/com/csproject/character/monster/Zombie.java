@@ -13,6 +13,7 @@ public class Zombie extends Monster {
         super(BASE_XP + (XP_PER_LEVEL * (level - 1)), level, strength, intelligence, agility);
     }
 
+    // Handles combat for the Zombie class
     @Override
     public CombatAction combat() {
         double roll = Game.getRandom().nextDouble(0.0, 1.0);
@@ -25,6 +26,7 @@ public class Zombie extends Monster {
         }
     }
 
+    // Handles save chance for the Zombie class
     @Override
     public SaveAction saveChance() {
         double damageReduction = Game.calculateEnemyChance(appliedStats.get(STRENGTH), 0.5);

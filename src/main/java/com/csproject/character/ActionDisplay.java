@@ -21,6 +21,7 @@ public record ActionDisplay(String success, String failure) {
         return new ActionDisplay(DEFAULT_SAVE_SUCCESS, DEFAULT_SAVE_FAILURE);
     }
 
+    // Method to replace the identifiers in the success message with the specified value
     public String getSuccessMessage(String self, String target, double damage) {
         String message = success;
         message = message.replaceAll(SELF_IDENTIFIER, self);
@@ -29,6 +30,7 @@ public record ActionDisplay(String success, String failure) {
         return message;
     }
 
+    // Method to replace the identifiers in the failure message with the specified value
     public String getFailureMessage(String self, String target, double damage) {
         String message = failure;
         message = message.replaceAll(SELF_IDENTIFIER, self);

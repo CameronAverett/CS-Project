@@ -24,6 +24,7 @@ public abstract class Player extends Character {
         this.name = name.substring(0, 1).toUpperCase() + name.substring(1);
     }
 
+    // Monster specific method to display attributes
     @Override
     public void displayStats() {
         System.out.printf(
@@ -61,6 +62,7 @@ public abstract class Player extends Character {
         this.score += earned;
     }
 
+    // Increment xp by the specified amount and level up if it exceeds a certain amount
     public void increaseExp(double xp) {
         this.exp += xp;
         while (this.exp >= getMaxExp()) {
@@ -69,6 +71,7 @@ public abstract class Player extends Character {
         }
     }
 
+    // Player specific method to handel leveling up and distributing points between their attributes
     @Override
     public void levelUp() {
         System.out.printf("%n%s has reached level %d!", name, getLevel());

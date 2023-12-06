@@ -13,6 +13,7 @@ public class MonsterFactory {
 
     private MonsterFactory() {}
 
+    // Method that follows the java factory pattern to create a monster from a class type and level
     public static Monster get(String monsterClass, int level) {
         int[] stats = Character.generateStats(level, 6 * level + 1, 3);
         Arrays.sort(stats);

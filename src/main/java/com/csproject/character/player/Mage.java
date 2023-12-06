@@ -54,7 +54,8 @@ public class Mage extends Player {
         if (action.successful()) consumeMana(3.0);
         return action;
     }
-    
+
+    // Handles combat for the Mage class
     @Override
     public CombatAction combat() {
         GameResponse response = new GameResponse("Which move do you want to use? ");
@@ -83,6 +84,7 @@ public class Mage extends Player {
         }
     }
 
+    // Handles save chance for the Mage class
     @Override
     public SaveAction saveChance() {
         return teleport();

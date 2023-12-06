@@ -10,11 +10,13 @@ public class CharacterCreator {
 
     private CharacterCreator() {}
 
+    // Method to get the name from the user
     private static String getName() {
         GameResponse response = new GameResponse("What is your name? ");
         return response.getResponse();
     }
 
+    // Method to get the class from the user, will run until a valid response is given
     private static String getPlayerClass() {
         GameResponse response = new GameResponse("Please select a class: ");
         response.setResponses(PlayerFactory.PLAYER_CLASSES);
@@ -23,6 +25,7 @@ public class CharacterCreator {
         return response.getResponse();
     }
 
+    // Get stats from player and repeat process if the user doesn't want to keep those allotted stats. Generated stat points are not regenerated
     private static HashMap<String, Integer> getStats() {
         HashMap<String, Integer> stats = new HashMap<>();
         
@@ -44,7 +47,7 @@ public class CharacterCreator {
         return stats;
     }
 
-
+    // Method that runs the character creator process
     public static Player createCharacter() {
         String playerName = getName();
         String playerClass = getPlayerClass();

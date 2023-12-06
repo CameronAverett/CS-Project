@@ -24,6 +24,7 @@ public class GameRoom {
 		this(false);
 	}
 
+	// Creates a monster if the roll is less than 70 and null if it is empty.
 	private Monster createMonster(double difficulty) {
 		double roll = random.nextDouble(100) * difficulty;
 		if (roll < 70) return null;

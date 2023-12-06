@@ -13,6 +13,7 @@ public abstract class Monster extends Character {
         this.xp = xp;
     }
 
+    // Monster specific method to display attributes
     @Override
     public void displayStats() {
         System.out.printf(

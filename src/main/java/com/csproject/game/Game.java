@@ -53,6 +53,7 @@ public class Game {
 
     private Game() {}
 
+    // Method that follows the singleton class pattern
     public static Game getInstance() {
         if (instance == null) {
             instance = new Game();
@@ -60,6 +61,7 @@ public class Game {
         return instance;
     }
 
+    // Main method of game class. Should only be called in the Main class
     public void play() {
         initialize();
         while (true) {
@@ -70,11 +72,13 @@ public class Game {
         quit();
     }
 
+    // Run any processed that are required to function at the beginning of play.
     private void initialize() {
         this.player = CharacterCreator.createCharacter();
         this.map = new GameMap();
     }
 
+    // Main gameplay loop that handles each turn the player plays
     private boolean loop() {
         boolean shouldContinue = navigation();
         if (!shouldContinue) return false;
@@ -104,6 +108,7 @@ public class Game {
         return true;
     }
 
+    // Method to handle closing the game at the end of play. Displays the results of play.
     private void quit() {
         System.out.println("\nEnding Game...");
         in.close();
@@ -112,42 +117,7 @@ public class Game {
         player.displayStats();
     }
 
-    private boolean getPlayerAction() {
-        boolean proceed = false;
-        while (!proceed) {
-            GameResponse response = new GameResponse("What would you like to do? ", ACTIONS);
-            response.displayResponses("\nAvailable Responses");
-            String receivedResponse = response.getResponse();
-
-            switch (receivedResponse) {
-                case DISPLAY_STATS -> player.displayStats();
-                case DISPLAY_ENEMY_STATS -> enemy.displayStats();
-                case PROCEED_TO_COMBAT -> proceed = true;
-                case END_GAME -> {
-                    return false;
-                }
-                default -> throw new GameResponseNotFoundException(response.getValidResponses(), receivedResponse);
-            }
-        }
-        return true;
-    }
-
-    private void combatTurn(Character attacker, Character defender) {
-        attacker.applyEffects();
-        CombatAction action = attacker.combat();
-        action.displayAction(attacker, defender);
-
-        if (!action.hit()) return;
-
-        double damage = action.damage();
-        SaveAction save = defender.saveChance();
-        if (save.successful()) {
-            save.displayAction(defender, attacker);
-            damage *= save.damageReduction();
-        }
-        defender.dealDamage(damage);
-    }
-
+    // Handles the initial action the player makes at the start of each loop to move through the map.
     public boolean navigation() {
         map.displayMap();
 
@@ -182,6 +152,44 @@ public class Game {
         return true;
     }
 
+    // Handles the initial action a player can make at the start of combat
+    private boolean getPlayerAction() {
+        boolean proceed = false;
+        while (!proceed) {
+            GameResponse response = new GameResponse("What would you like to do? ", ACTIONS);
+            response.displayResponses("\nAvailable Responses");
+            String receivedResponse = response.getResponse();
+
+            switch (receivedResponse) {
+                case DISPLAY_STATS -> player.displayStats();
+                case DISPLAY_ENEMY_STATS -> enemy.displayStats();
+                case PROCEED_TO_COMBAT -> proceed = true;
+                case END_GAME -> {
+                    return false;
+                }
+                default -> throw new GameResponseNotFoundException(response.getValidResponses(), receivedResponse);
+            }
+        }
+        return true;
+    }
+
+    // Handles a single turn of combat between two characters. Should be called twice for combat, once for player and once for enemy.
+    private void combatTurn(Character attacker, Character defender) {
+        attacker.applyEffects();
+        CombatAction action = attacker.combat();
+        action.displayAction(attacker, defender);
+
+        if (!action.hit()) return;
+
+        double damage = action.damage();
+        SaveAction save = defender.saveChance();
+        if (save.successful()) {
+            save.displayAction(defender, attacker);
+            damage *= save.damageReduction();
+        }
+        defender.dealDamage(damage);
+    }
+
     public Scanner getIn() {
         return in;
     }
@@ -198,6 +206,7 @@ public class Game {
         return random;
     }
 
+    // Calculates the percentage of a normal distribution.
     private static double erf(double z) {
         double t = 1.0 / (1.0 + 0.47047 * Math.abs(z));
         double poly = t * (0.3480242 + t * (-0.0958798 + t * (0.7478556)));
@@ -219,6 +228,7 @@ public class Game {
         return maxChance * percentage(std, mean, x);
     }
 
+    // Calculates the accuracy a player has to hit the enemy based on some stat value x and the maximum accuracy the player will have.
     public static double calculatePlayerChance(double x, double maxChance) {
         if (x == 0.0) return 0.0;
         int playerLevel = Game.getInstance().player.getLevel();
@@ -227,6 +237,7 @@ public class Game {
         return calculateChance(DEFAULT_STD, DEFAULT_MEAN, z, maxChance);
     }
 
+    // Calculates the accuracy an enemy has to hit the player based on some stat value x and the maximum accuracy the enemy will have.
     public static double calculateEnemyChance(double x, double maxChance) {
         if (x == 0.0) return 0.0;
         int playerLevel = Game.getInstance().player.getLevel();
@@ -235,6 +246,7 @@ public class Game {
         return calculateChance(DEFAULT_STD, DEFAULT_MEAN, z, maxChance);
     }
 
+    // Calculates the stat points the player will have based on the difficulty and normal distribution.
     public static int getStatPoints() {
         return (int) Math.floor(LEVEL_UP_STATS * erf(1 / getInstance().difficulty));
     }

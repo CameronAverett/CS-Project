@@ -1,14 +1,15 @@
 package com.csproject.game;
 
 import com.csproject.exceptions.game.GameMapCreationException;
-import com.csproject.exceptions.game.GameResponseNotFoundException;
 
 import java.util.*;
 
+// Class to handle boolean conditions that map configurations can have.
 interface GameMapCondition {
 	boolean call(int x, int y);
 }
 
+// Class to handle the map positions
 record Coordinate(int x, int y) {
 	public boolean equals(Coordinate other) {
 		return x == other.x && y == other.y;
@@ -45,6 +46,7 @@ public class GameMap {
 		createGameMap();
 	}
 
+	// Method that is called whenever a new map needs to be created.
 	public void createGameMap() {
 		double difficulty = Game.getInstance().getDifficulty();
 
@@ -74,6 +76,7 @@ public class GameMap {
 		mapRooms = createRooms();
 	}
 
+	// Method to determine the layout of the map.
 	private int[][] createMapLayout(int width, int height) {
 		List<GameMapCondition> conditions = new ArrayList<>();
 		switch (random.nextInt(5)) {
@@ -124,6 +127,7 @@ public class GameMap {
 		return createMapLayout(width, height, conditions);
 	}
 
+	// Method that create the map given the desired width and height and a list of map conditions.
 	private int[][] createMapLayout(int width, int height, List<GameMapCondition> conditions) {
 		int[][] map = new int[width][height];
 		for (int x = 0; x < width; x++) {
@@ -141,6 +145,7 @@ public class GameMap {
 		return map;
 	}
 
+	// Method that creates the room hashmap from the created map layout.
 	private HashMap<Coordinate, GameRoom> createRooms() {
 		HashMap<Coordinate, GameRoom> rooms = new HashMap<>();
 		for (int x = 0; x < getWidth(); x++) {
@@ -155,6 +160,7 @@ public class GameMap {
 		return rooms;
 	}
 
+	// Calculates the distance between 2 points on the map.
 	private double getDistance(Coordinate a, Coordinate b) {
 		double left = Math.pow(b.x() - a.x(), 2);
 		double right = Math.pow(b.y() - a.y(), 2);
@@ -185,6 +191,7 @@ public class GameMap {
 		return exit;
 	}
 
+	// Determines if the coordinate is not in an empty room or off of the map
 	public boolean isRoom(Coordinate coordinate) {
 		if (coordinate.x() < 0 || coordinate.x() >= getWidth()) return false;
 		if (coordinate.y() < 0 || coordinate.y() >= getHeight()) return false;
@@ -207,6 +214,7 @@ public class GameMap {
 		return mapRooms.get(location);
 	}
 
+	// Method to display the map. Is called before all player navigation actions.
 	public void displayMap() {
 		System.out.printf(
 				"""

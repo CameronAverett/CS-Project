@@ -40,7 +40,8 @@ public class Archer extends Player {
         return new SaveAction(EVASIVE_MANEUVER, damageReduction, chance);
     }
 
-     @Override
+    // Handles combat for the Archer class
+    @Override
     public CombatAction combat() {
         GameResponse response = new GameResponse("Which move do you want to use? ");
         response.setResponses(List.of(SHOOT_ARROW, PRECISION_SHOT));
@@ -64,6 +65,7 @@ public class Archer extends Player {
         }
     }
 
+    // Handles save chance for the Archer class
     @Override
     public SaveAction saveChance() {
         return evasiveManeuver();

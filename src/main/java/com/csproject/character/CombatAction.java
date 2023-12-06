@@ -51,7 +51,7 @@ public record CombatAction(String action, double damage, double chance, StatusEf
         return Game.getRandom().nextDouble(0.0, 1.0001) < chance;
     }
 
-
+    // Get the name of a character class object from the class name if it is a monster and the name field if it is a player
     private static String getCharacterTag(Character character) {
         String characterTag = character.getClass().getSimpleName();
         if (character instanceof Player player) {
@@ -60,6 +60,7 @@ public record CombatAction(String action, double damage, double chance, StatusEf
         return characterTag;
     }
 
+    // Method to display the action and should be called after it is returned
     public void displayAction(Character self, Character target) {
         String selfTag = getCharacterTag(self);
         String targetTag = getCharacterTag(target);

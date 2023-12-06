@@ -94,6 +94,7 @@ public abstract class Character {
         }
     }
 
+    // Get the maximum mana a character can have given their intelligence
     public double getMaxMana() {
         return MANA_PER_INTELLIGENCE * intelligenceAttr.getValue();
     }
@@ -122,6 +123,7 @@ public abstract class Character {
         return this.statusEffects;
     }
 
+    // Method that applies the effects are updates the appliedStats map. should be called at the beginning of each turn.
     public void applyEffects() {
         // Apply effects and remove the effects that have expired
         List<Effect> appliedStatusEffects = new ArrayList<>();
@@ -168,6 +170,7 @@ public abstract class Character {
         this.appliedStats = appliedAttributes;
     }
 
+    // Method to a certain number of integers within a specified range
     public static int[] generateStats(int min, int bound, int size) {
         int[] genStats = new int[size];
         for(int i = 0; i < size; i++) {

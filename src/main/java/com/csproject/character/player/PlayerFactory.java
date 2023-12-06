@@ -14,6 +14,7 @@ public class PlayerFactory {
 
     private PlayerFactory() {}
 
+    // Method that follows the java factory pattern to create a player
     public static Player get(String playerClass, String name, int level, int strength, int intelligence, int agility) {
         switch (playerClass) {
             case WARRIOR -> {
