@@ -64,7 +64,7 @@ public class Mage extends Player {
         if (getLevel() >= 3) response.addResponse(HEAL);
         if (getLevel() >= 5) response.addResponse(CAST_LIGHTNING);
 
-        response.displayResponses("if (isRoom(new Coordinate(location.x(), location.y() - 1))) response.addResponse(NAV_UP);");
+        response.displayResponses("\nAvailable Moves");
         String responseValue = response.getResponse();
 
         switch (responseValue) {
