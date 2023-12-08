@@ -71,7 +71,7 @@ public abstract class Player extends Character {
         }
     }
 
-    // Player specific method to handel leveling up and distributing points between their attributes
+    // Player specific method to handle leveling up and distributing points between their attributes
     @Override
     public void levelUp() {
         System.out.printf("%n%s has reached level %d!", name, getLevel());
