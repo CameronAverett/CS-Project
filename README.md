@@ -10,6 +10,7 @@
 
 The following IDEs were used for developing this project.
 * IntelliJ CE
+* Eclipse
 
 ## Java Version
 
