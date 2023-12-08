@@ -34,8 +34,8 @@ public record SaveAction(String action, double damageReduction, double chance, b
         String selfTag = getCharacterTag(self);
         String targetTag = getCharacterTag(target);
         String success = successful ? SUCCESS_IDENTIFIER : FAILURE_IDENTIFIER;
-        String consequence = successful ? display().getSuccessMessage(selfTag, targetTag, damageReduction) :
-                display.getFailureMessage(selfTag, targetTag, damageReduction);
+        String consequence = successful ? display().getSuccessMessage(selfTag, targetTag, damageReduction * 100) :
+                display.getFailureMessage(selfTag, targetTag, damageReduction * 100);
 
         System.out.printf(
                 """
