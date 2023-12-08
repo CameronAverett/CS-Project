@@ -6,8 +6,8 @@ import com.csproject.game.Game;
 
 public class Skeleton extends Monster {
 
-    private static final double BASE_XP = 12.0;
-    private static final double XP_PER_LEVEL = 7.0;
+    private static final double BASE_XP = 20.0;
+    private static final double XP_PER_LEVEL = 9.0;
 
     public Skeleton(int level, int strength, int intelligence, int agility) {
         super(BASE_XP + (XP_PER_LEVEL * (level - 1)), level, strength, intelligence, agility);

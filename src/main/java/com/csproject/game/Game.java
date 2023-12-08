@@ -143,6 +143,7 @@ public class Game {
                 scaleDifficulty();
                 map.createGameMap();
                 player.heal(player.getMaxHp());
+                player.regenMana(player.getMaxMana());
             }
             case (END_GAME) -> {
                 return false;

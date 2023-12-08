@@ -6,7 +6,7 @@ import com.csproject.game.Game;
 
 public class Slime extends Monster {
 
-    private static final double BASE_XP = 10.0;
+    private static final double BASE_XP = 25.0;
     private static final double XP_PER_LEVEL = 6.5;
 
     public Slime(int level, int strength, int intelligence, int agility) {

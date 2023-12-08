@@ -30,20 +30,20 @@ public class Mage extends Player {
     private CombatAction summonIceBarrier() {
         double chance = Game.calculatePlayerChance(getIntelligence() + getAgility(), getMana() >= 7.0 ? 0.85 : 0.0);
         CombatAction action = new CombatAction(SUMMON_ICE_BARRIER, getIntelligence() + getAgility(), chance);
-        if (action.hit()) consumeMana(7.0);
+        if (action.hit()) consumeMana(5.0);
         return action;
     }
 
     private CombatAction heal() {
         boolean canUse = getIntelligence() >= 8 && getMana() >= 10.0;
-        if (canUse) consumeMana(10.0);
+        if (canUse) consumeMana(7.0);
         return new CombatAction(HEAL, canUse);
     }
 
     private CombatAction castLightning() {
         double chance = Game.calculatePlayerChance(3.0 * getIntelligence(), getMana() >= 10.0 ? 0.8 : 0.0);
         CombatAction action = new CombatAction(CAST_LIGHTNING, 3.0 * getIntelligence(), chance);
-        if (action.hit()) consumeMana(10.0);
+        if (action.hit()) consumeMana(7.0);
         return action;
     }
 
