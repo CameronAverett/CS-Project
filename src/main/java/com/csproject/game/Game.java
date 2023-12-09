@@ -128,7 +128,7 @@ public class Game {
         if (map.isRoom(new Coordinate(location.x() - 1, location.y()))) response.addResponse(NAV_LEFT);
         if (map.isRoom(new Coordinate(location.x(), location.y() + 1))) response.addResponse(NAV_DOWN);
         if (map.isRoom(new Coordinate(location.x() + 1, location.y()))) response.addResponse(NAV_RIGHT);
-        if (location.equals(map.getEntrance())) response.addResponse(NAV_EXIT);
+        if (location.equals(map.getExit()) || location.equals(map.getEntrance())) response.addResponse(NAV_EXIT);
         response.addResponse(END_GAME);
 
         response.displayResponses("\nAvailable Actions");
