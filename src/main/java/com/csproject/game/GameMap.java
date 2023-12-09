@@ -65,7 +65,7 @@ public class GameMap {
 		}
 
 		exit = new Coordinate(random.nextInt(width), random.nextInt(height));
-		while (!(getRoomType(exit) == BASIC_ROOM && getDistance(entrance, exit) > width * 0.6)) {
+		while (getRoomType(exit) != BASIC_ROOM && getDistance(entrance, exit) <= width * 0.6) {
 			exit = new Coordinate(exit.x(), random.nextInt(height));
 		}
 
