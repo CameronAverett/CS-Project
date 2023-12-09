@@ -45,7 +45,7 @@ public abstract class Player extends Character {
                 Agility: %d
                 ==============================
                 """, name, this.getClass().getSimpleName(), score, getLevel(),
-                exp / getMaxExp(), (getHp() / getMaxHp()) * 100, (getMana() / getMaxMana()) * 100,
+                (exp / getMaxExp()) * 100, (getHp() / getMaxHp()) * 100, (getMana() / getMaxMana()) * 100,
                 strengthAttr.getValue(), intelligenceAttr.getValue(), agilityAttr.getValue()
         );
     }
